@@ -1,0 +1,22 @@
+---------------------- Issues: ----------------------
+Issue #1: Future problem maybe. In order to get the image files,
+it has to download from each link. The loop has to be carefully done so that
+the program does not go over the ratelimit. I suggest trial by error in looping
+through a saved response. Also, I would have the program check for number of
+requests left available before making another one.
+
+Issue #2 [Solved]: The connection needs to be kept alive in order to keep sending requests
+to grab images. The content length will be parsed and then read. The length is the
+number of characters that there are at the start of the xml.
+
+Issue #3 [Solving]: As I am progressing with the code, I realize that I should have made a generic parser
+for each request.
+
+Issue #4 [Solved]: A second BIO object should be used to grab the images. This bio will be non-SSL that way
+it will not have to handle redirects.
+
+Issue #5: Makefile not working the way I want it to.
+
+Issue #6: Try to use multithreading
+
+Issue #7: The images are not clear. Possibly do a deconvolution?
