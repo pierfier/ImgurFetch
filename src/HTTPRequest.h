@@ -7,7 +7,11 @@
 using namespace std;
 
 class HttpRequest{
-    
+	public:
+		
+    private:
+    	string key;
+    	string ID;
 };
 
 #endif
