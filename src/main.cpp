@@ -10,13 +10,9 @@
 #include <sstream>
 #include <fstream>
 #include <string>
-#include "openssl/bio.h"
-#include "openssl/ssl.h"
-#include "openssl/err.h"
+
 
 using namespace std;
-
-string PORT("443");
 
 //Loop through the response to get all of the links and download
 //Each image
