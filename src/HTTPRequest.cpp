@@ -3,6 +3,16 @@
 
 using namespace std;
 
+//Default Constructor
+HTTPRequest::HttPRequest() : bio_(NULL), ctx_(NULL),
+    key_(""), ID_(""){}
+
+//Initial Values Constructor
+HTTPRequest::HttPRequest(const string& key, const string& id) :
+    key_(key), ID_(id), bio_(NULL), ctx(NULL){
+    init();
+}
+
 //This method returns the content length of the http response.
 //The bio should have read up to \n\n 
 int HttPRequest::getContentLength(const string& header){
