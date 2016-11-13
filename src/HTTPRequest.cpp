@@ -4,18 +4,18 @@
 using namespace std;
 
 //Default Constructor
-HTTPRequest::HttPRequest() : bio_(NULL), ctx_(NULL),
+HTTPRequest::HTTPRequest() : bio_(NULL), ctx_(NULL),
     key_(""), ID_(""){}
 
 //Initial Values Constructor
-HTTPRequest::HttPRequest(const string& key, const string& id) :
-    key_(key), ID_(id), bio_(NULL), ctx(NULL){
+HTTPRequest::HTTPRequest(const string& key, const string& id) :
+    key_(key), ID_(id), bio_(NULL), ctx_(NULL){
     init();
 }
 
 //This method returns the content length of the http response.
-//The bio should have read up to \n\n 
-int HttPRequest::getContentLength(const string& header){
+//The bio_ should have read up to \n\n 
+int HTTPRequest::getContentLength(const string& header){
     int i = header.find("Content-Length: ");
     i+= 16;
     
@@ -30,21 +30,21 @@ int HttPRequest::getContentLength(const string& header){
 }
 
 //Gets the response header
-void HttPRequest::getHeader(string& header){
+void HTTPRequest::getHeader(string& header){
     char cur;
-    while (BIO_read(bio, &cur, 1) > 0 ){
+    while (BIO_read(bio_, &cur, 1) > 0 ){
         header += cur;
 
         if(cur == '\r'){
-            BIO_read(bio, &cur, 1);
+            BIO_read(bio_, &cur, 1);
             header += cur;
             
             if(cur == '\n'){
-                BIO_read(bio, &cur, 1);
+                BIO_read(bio_, &cur, 1);
                 header += cur;
                 
                 if(cur == '\r'){
-                    BIO_read(bio, &cur, 1);
+                    BIO_read(bio_, &cur, 1);
                     break;
                 }
             }
@@ -63,19 +63,19 @@ void HTTPRequest::init(){
     OpenSSL_add_all_algorithms();
 
     //Setting up SSL pointers
-    ctx = SSL_CTX_new(SSLv23_client_method());
+    ctx_ = SSL_CTX_new(SSLv23_client_method());
     SSL * ssl;
 
     //Loading the certificates
-    if(!SSL_CTX_load_verify_locations(ctx, /*"UbuntuOne-Go_Daddy_CA.pem",*/ NULL, "/etc/ssl/certs/")){
+    if(!SSL_CTX_load_verify_locations(ctx_, /*"UbuntuOne-Go_Daddy_CA.pem",*/ NULL, "/etc/ssl/certs/")){
         cerr << "Loading the certs file failed" << endl;
         exit(1);
     }
     
 
     //Setup the BIO
-    bio = BIO_new_ssl_connect(ctx);
-    BIO_get_ssl(bio, & ssl);
+    bio_ = BIO_new_ssl_connect(ctx_);
+    BIO_get_ssl(bio_, & ssl);
     SSL_set_mode(ssl, SSL_MODE_AUTO_RETRY);
  
     //Check ssl pointer
@@ -85,13 +85,13 @@ void HTTPRequest::init(){
     }
 
     //Attempts a connection
-    BIO_set_conn_hostname(bio, (host + ":" + PORT + "asdfas").c_str());
+    BIO_set_conn_hostname(bio_, (host + ":" + port_ + "asdfas").c_str());
 
     //Check connection
-    if(BIO_do_connect(bio) <= 0){
+    if(BIO_do_connect(bio_) <= 0){
         cerr << "Connection Failed" << endl;
-        BIO_free_all(bio);
-        SSL_CTX_free(ctx);
+        BIO_free_all(bio_);
+        SSL_CTX_free(&ctx_);
         exit(1);
     }
 
@@ -107,16 +107,16 @@ void HTTPRequest::init(){
     }
     
     //Handshake
-    if(BIO_do_handshake(bio) <= 0){
+    if(BIO_do_handshake(bio_) <= 0){
         cerr << "Cannot establish SSL connection" << endl;
         exit(1);
     }
 }
 
 //Clean SSL context
-void HTTPRequest::~HTTPRequest(){
-    BIO_free_all(bio);
-    SSL_CTX_free(ctx);
+HTTPRequest::~HTTPRequest(){
+    BIO_free_all(bio_);
+    SSL_CTX_free(&ctx_);
 }
 
 /* This method returns the response from a field search
@@ -129,21 +129,19 @@ void HTTPRequest::requestResponse(string& response){
     string request;
     
     //Write the GET header
-    request = "GET /3/album/" + album + "/images.xml";
+    request = "GET /3/album/" + ID_ + "/images.xml";
 
     request += " HTTP/1.1";
 
-    request += "\r\nHost: api.imgur.com\r\n";
-    
-    request += "Authorization: Client-ID " + id + "\r\n";
+    request += "Authorization: Client-ID " + key_ + "\r\n";
 
     request += "Connection: alive\r\n\r\n";
 
-    if ( BIO_write(bio, request.c_str(), request.size()) <= 0) {
+    if ( BIO_write(bio_, request.c_str(), request.size()) <= 0) {
         cout << "Write Failed" << endl;
         exit(1);
     }
-    BIO_flush(bio);
+    BIO_flush(bio_);
     
     //Read in the response
     char cur;
@@ -151,13 +149,13 @@ void HTTPRequest::requestResponse(string& response){
  
     string header;
 
-    getHeader(bio, header);
+    getHeader(bio_, header);
 
     length = getContentLength(header);
 
     //Read in the xml
     for(int i = 0; i < length; ++i){
-        BIO_read(bio, &cur, 1);
+        BIO_read(bio_, &cur, 1);
         response += cur;
     }
 

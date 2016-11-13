@@ -2,7 +2,8 @@
 #define DOWNLOADER_H
 
 class Downloader{
-    
+    public:
+        void getImages(
 };
 
 

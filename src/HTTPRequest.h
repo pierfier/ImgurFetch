@@ -9,7 +9,7 @@
 
 using namespace std;
 
-class HttpRequest{
+class HTTPRequest{
 	public:
         //Constructor
         HTTPRequest();
@@ -27,6 +27,7 @@ class HttpRequest{
     	string ID_;
         SSL_CTX ctx_;
         BIO * bio_;
+        string port_;
 };
 
 #endif
