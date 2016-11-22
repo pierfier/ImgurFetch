@@ -19,7 +19,6 @@ class HTTPRequest{
         void getHeader(string& header);
         void requestResponse(string& response);
         void init();
-        Bio * getBIO(){return bio_;}
 
         //Destructor
         ~HTTPRequest();
@@ -27,7 +26,6 @@ class HTTPRequest{
     	string key_;
     	string ID_;
         SSL_CTX ctx_;
-        BIO * bio_;
         string port_;
 };
 

@@ -1,5 +1,8 @@
-#include<iostream>
-#include"HTTPRequest.h"
+#include <iostream>
+#include "openssl/bio_.h"
+#include "openssl/ssl.h"
+#include "openssl/err.h"
+#include "HTTPRequest.h"
 
 using namespace std;
 
@@ -10,7 +13,6 @@ HTTPRequest::HTTPRequest() : bio_(NULL), ctx_(NULL),
 //Initial Values Constructor
 HTTPRequest::HTTPRequest(const string& key, const string& id) :
     key_(key), ID_(id), bio_(NULL), ctx_(NULL){
-    init();
 }
 
 //This method returns the content length of the http response.
@@ -29,8 +31,86 @@ int HTTPRequest::getContentLength(const string& header){
     return atoi(num.c_str());
 }
 
+//Loop through the response to get all of the links and download
+//Each image
+void Downloader::getImages(){
+    
+    //Find the links for the images and then download them
+    string link;
+    
+    //Buffer for reading in data
+    char cur;
+
+    //Index to indicate progress along the album xml structure
+    int i = 0;
+    
+    //Stores the number of images that were downloaded
+    int numIm = 0;
+
+    //Loop through the xml and download the images from each link
+    while( (i = response.find("link", i)) != string::npos /*&& numIm < 10*/){ //TODO here is the condition that limits number of images downloaded
+        ++numIm;
+
+        i = response.find("com", i);
+        i += 4;
+
+        link = "";
+        for(;response[i] != '<'; ++i){
+            link += response[i];
+        }
+
+        //DEBUG
+        cout << link << endl;
+
+        //Setup request to grab image
+        
+        string request = "GET /" + link;
+        
+        request += " HTTP/1.1";
+
+        request += "\r\nHost: i.imgur.com\r\n";
+        
+        request += "Authorization: Client-ID " + id + "\r\n";
+        
+        request += "Connection: keep-alive\r\n\r\n";
+
+        //Send request
+        if ( BIO_write(bio_, request.c_str(), request.size()) <= 0) {
+            cout << "Write Failed" << endl;
+            exit(1);
+        }
+
+        BIO_flush(bio_);
+
+        stringstream ss;
+        ss << numIm;
+
+        //Read in the response
+        //And then write to image file
+        ofstream out(("image" + ss.str()  + ".jpg").c_str(), ofstream::binary);
+         
+        string header;
+        
+        request_->getHeader(header, bio_);
+
+        int length = request_->getContentLength(header);
+ 
+        //DEBUG
+        //cout << header << endl;
+        //cout << length << endl;
+        //exit(1);
+
+
+        //Write image to file
+        for(int i = 0; i < length; ++i){
+            BIO_read(bio_, &cur, 1);
+            out.write(&cur, 1);
+        }
+    }
+}
+
 //Gets the response header
-void HTTPRequest::getHeader(string& header){
+void HTTPRequest::getHeader(string& header, BIO * bio_){
     char cur;
     while (BIO_read(bio_, &cur, 1) > 0 ){
         header += cur;
@@ -53,7 +133,7 @@ void HTTPRequest::getHeader(string& header){
 }
 
 //Initialize the SSl environment
-void HTTPRequest::init(){
+void HTTPRequest::init(BIO * bio_){
     //Initialize SSL
     ERR_load_crypto_strings();
     ERR_load_SSL_strings();
@@ -119,10 +199,11 @@ HTTPRequest::~HTTPRequest(){
     SSL_CTX_free(&ctx_);
 }
 
-/* This method returns the response from a field search
- *
+/* @param bio_ is the pointer to a BIO object used to send a request and read in a response
+ * @param response is how the resulting xml is saved
+ * This method returns the response from a field search
 */
-void HTTPRequest::requestResponse(string& response){
+void HTTPRequest::requestResponse(string& response, BIO * bio_){
      //Connection has been established
     //Searching can now be done
     
