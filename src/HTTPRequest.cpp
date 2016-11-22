@@ -158,6 +158,6 @@ void HTTPRequest::requestResponse(string& response){
         BIO_read(bio_, &cur, 1);
         response += cur;
     }
-
+    
     //cout << response << endl;
 }

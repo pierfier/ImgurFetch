@@ -2,7 +2,7 @@
 
 //Loop through the response to get all of the links and download
 //Each image
-void Downloader::getImages(const string& response, BIO * bio, const string& id){
+void Downloader::getImages(){
     
     //Find the links for the images and then download them
     string link;
@@ -76,4 +76,13 @@ void Downloader::getImages(const string& response, BIO * bio, const string& id){
             out.write(&cur, 1);
         }
     }
+}
+
+void Downloader::~Downloader(){
+    delete request_;
+}
+
+void Downloader::Downloader(const string& key, const string & id){
+    request_ = new HTTPRequest(key, id);
+    
 }

@@ -67,6 +67,8 @@ int main(int argc, char *argv[]){
             cout << "Enter the album ID: ";
 
             cin >> album;
+            
+            HTTPRequest * request = new HTTPRequest(key, ID);
 
             //Request response
             requestResponse(bio, id, album, response);
