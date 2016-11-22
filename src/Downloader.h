@@ -5,12 +5,10 @@
 
 class Downloader{
     public:
-        void getImages();
-        Downloader();
+        Downloader(const string & key_, const string& id_);
         ~Downloader();
     private:
         string key_;
         string id_;
-        BIO * bio_;
 };
 #endif

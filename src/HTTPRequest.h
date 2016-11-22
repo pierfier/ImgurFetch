@@ -27,6 +27,7 @@ class HTTPRequest{
     	string ID_;
         SSL_CTX ctx_;
         string port_;
+        BIO * bio_;
 };
 
 #endif
