@@ -54,28 +54,28 @@ int main(int argc, char *argv[]){
             
             bio = init(ctx);
             
-            string album = "";
+            string id = "";
             string response = "";
      		
             //Get the Client ID
-            ifstream in("ID.txt");
+            ifstream in("key.txt");//TODO need to change this relative path
 
-            string id;
+            string key;
 
-            in >> id;
+            in >> key;
             //Prompt for album ID
             cout << "Enter the album ID: ";
 
-            cin >> album;
+            cin >> id;
             
-            HTTPRequest * request = new HTTPRequest(key, ID);
+            Downloader * downloader = new Downloader(key, id);
 
             //Request response
-            requestResponse(bio, id, album, response);
+            requestResponse(bio, id, album, response); //TODO need to make this internal with Downloader
 
             //------------------------ Code to Compile images into a pdf ---------------
   
-            getImages(response, bio, id);        
+            getImages(response, bio, id);//TODO make this internal with the downloader
             
             
         }else if(string(argv[i]) == "--help"){

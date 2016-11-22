@@ -19,6 +19,7 @@ class HTTPRequest{
         void getHeader(string& header);
         void requestResponse(string& response);
         void init();
+        Bio * getBIO(){return bio_;}
 
         //Destructor
         ~HTTPRequest();

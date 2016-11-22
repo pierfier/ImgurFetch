@@ -49,7 +49,7 @@ void Downloader::getImages(){
             exit(1);
         }
 
-        BIO_flush(bio);
+        BIO_flush(bio_);
 
         stringstream ss;
         ss << numIm;
@@ -60,9 +60,9 @@ void Downloader::getImages(){
          
         string header;
         
-        getHeader(bio, header);
+        request_->getHeader(bio, header);
 
-        int length = getContentLength(header);
+        int length = request_->getContentLength(header);
  
         //DEBUG
         //cout << header << endl;
@@ -82,7 +82,8 @@ void Downloader::~Downloader(){
     delete request_;
 }
 
-void Downloader::Downloader(const string& key, const string & id){
+void Downloader::Downloader(const string& key, const string & id) : 
+                                           key_(key), id_(id) {
     request_ = new HTTPRequest(key, id);
-    
+    bio_ = request_->getBIO();
 }
