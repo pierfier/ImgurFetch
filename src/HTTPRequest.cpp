@@ -33,7 +33,7 @@ int HTTPRequest::getContentLength(const string& header){
 
 //Loop through the response to get all of the links and download
 //Each image
-void Downloader::getImages(){
+void HTTPRequest::getImages(){
     
     //Find the links for the images and then download them
     string link;
@@ -91,9 +91,9 @@ void Downloader::getImages(){
          
         string header;
         
-        request_->getHeader(header, bio_);
+        getHeader(header, bio_);
 
-        int length = request_->getContentLength(header);
+        int length = getContentLength(header);
  
         //DEBUG
         //cout << header << endl;
