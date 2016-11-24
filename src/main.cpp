@@ -68,16 +68,12 @@ int main(int argc, char *argv[]){
 
             cin >> id;
             
+            //Object that handles the downloading of images from album with key "key"
             Downloader * downloader = new Downloader(key, id);
-
-            //Request response
-            requestResponse(bio, id, album, response); //TODO need to make this internal with Downloader
-
-            //------------------------ Code to Compile images into a pdf ---------------
-  
-            getImages(response, bio, id);//TODO make this internal with the downloader
             
-            
+            //Method to actually get Images
+            downloader->getImages();
+
         }else if(string(argv[i]) == "--help"){
             cout << "Usage: " << endl;
             cout  << "-g" << "\t" << "Grab the images from a certain imgur album" << endl;

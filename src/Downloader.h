@@ -10,5 +10,6 @@ class Downloader{
     private:
         string key_;
         string id_;
+        HTTPRequest * request_;
 };
 #endif

@@ -1,17 +1,17 @@
 CC=g++
 DEBUG=-g
-EXE=comDow
+EXE=Fetch
 LIBS=-lssl -lcrypto
+SRC=src/*.cpp
 C_OBJ=-c
 C_LINK=-o
 
-%.o: *.cpp 
-	$(CC) $(DEBUG) $(C_OBJ) *.cpp
 
-%.o:*.h
+%.o: $(SRC)/%.cpp
+	$(CC) $(DEBUG) $(C_OBJ) $<
 
-$(EXE): %.o
-	$(CC) $(DEBUG) $(LIBS) *.o $(C_LINK) $(EXE)
+$(EXE): *.o
+	$(CC) $(DEBUG) $(LIBS) $? $(C_LINK) $(EXE)
 
 clean:
 	@echo "Cleaning Directory"
@@ -19,6 +19,9 @@ clean:
 
 debug:
 	gdb $(EXE)
+
+print: $(SRC)/*.cpp
+	@echo $?
 
 run:
 	./$(EXE)

@@ -1,5 +1,5 @@
 #include <iostream>
-#include "openssl/bio_.h"
+#include "openssl/bio.h"
 #include "openssl/ssl.h"
 #include "openssl/err.h"
 #include "HTTPRequest.h"
@@ -33,7 +33,7 @@ int HTTPRequest::getContentLength(const string& header){
 
 //Loop through the response to get all of the links and download
 //Each image
-void HTTPRequest::getImages(){
+void HTTPRequest::getImages(const string & response){
     
     //Find the links for the images and then download them
     string link;
