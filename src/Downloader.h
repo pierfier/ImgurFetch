@@ -6,6 +6,7 @@
 class Downloader{
     public:
         Downloader(const string & key_, const string& id_);
+        void getImages();
         ~Downloader();
     private:
         string key_;

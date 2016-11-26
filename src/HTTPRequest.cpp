@@ -91,7 +91,7 @@ void HTTPRequest::getImages(const string & response){
          
         string header;
         
-        getHeader(header, bio_);
+        getHeader(header);
 
         int length = getContentLength(header);
  
@@ -110,7 +110,7 @@ void HTTPRequest::getImages(const string & response){
 }
 
 //Gets the response header
-void HTTPRequest::getHeader(string& header, BIO * bio_){
+void HTTPRequest::getHeader(string& header){
     char cur;
     while (BIO_read(bio_, &cur, 1) > 0 ){
         header += cur;
@@ -133,7 +133,7 @@ void HTTPRequest::getHeader(string& header, BIO * bio_){
 }
 
 //Initialize the SSl environment
-void HTTPRequest::init(BIO * bio_){
+void HTTPRequest::init(){
     //Initialize SSL
     ERR_load_crypto_strings();
     ERR_load_SSL_strings();
@@ -203,7 +203,7 @@ HTTPRequest::~HTTPRequest(){
  * @param response is how the resulting xml is saved
  * This method returns the response from a field search
 */
-void HTTPRequest::requestResponse(string& response, BIO * bio_){
+void HTTPRequest::requestResponse(string& response){
      //Connection has been established
     //Searching can now be done
     

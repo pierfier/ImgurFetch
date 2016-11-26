@@ -2,12 +2,11 @@ CC=g++
 DEBUG=-g
 EXE=Fetch
 LIBS=-lssl -lcrypto
-SRC=src/*.cpp
+SRC=Downloader.cpp HTTPRequest.cpp main.cpp
 C_OBJ=-c
 C_LINK=-o
 
-
-%.o: $(SRC)/%.cpp
+%.o: src/$(SRC)
 	$(CC) $(DEBUG) $(C_OBJ) $<
 
 $(EXE): *.o

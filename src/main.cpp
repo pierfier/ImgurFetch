@@ -52,22 +52,19 @@ int main(int argc, char *argv[]){
             compileEPUB(atoi(argv[i+1]));
         }else if(string(argv[i]) == "-g"){
             
-            bio = init(ctx);
-            
-            string id = "";
-            string response = "";
+            string id;
      		
             //Get the Client ID
-            ifstream in("key.txt");//TODO need to change this relative path
+            ifstream in("res/key.txt");//TODO need to change this relative path
 
             string key;
 
             in >> key;
-            //Prompt for album ID
-            cout << "Enter the album ID: ";
 
-            cin >> id;
-            
+            in = ifstream("id.txt");
+
+            in >> id;
+
             //Object that handles the downloading of images from album with key "key"
             Downloader * downloader = new Downloader(key, id);
             
