@@ -10,9 +10,7 @@
 #include <sstream>
 #include <fstream>
 #include <string>
-#include "openssl/bio.h"
-#include "openssl/ssl.h"
-#include "openssl/err.h"
+#include "Downloader.h"
 
 using namespace std;
 
