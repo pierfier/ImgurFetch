@@ -13,7 +13,7 @@ class HTTPRequest{
 	public:
         //Constructor
         HTTPRequest();
-        HTTPRequest(const string& key, const string& id);
+        HTTPRequest(const string& key, const string& id, const string& host);
 		
         //grabs the content length from the header
         int getContentLength(const string& header);
@@ -35,6 +35,7 @@ class HTTPRequest{
         ~HTTPRequest();
     private:
     	string key_;
+        string host_;
     	string ID_;
         SSL_CTX ctx_;
         string port_;

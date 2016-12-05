@@ -9,11 +9,11 @@ using namespace std;
 
 //Default Constructor
 HTTPRequest::HTTPRequest() : bio_(NULL), ctx_(NULL),
-    key_(""), ID_(""){}
+    key_(""), ID_(""), host_(""){}
 
 //Initial Values Constructor
-HTTPRequest::HTTPRequest(const string& key, const string& id) :
-    key_(key), ID_(id), bio_(NULL), ctx_(NULL){
+HTTPRequest::HTTPRequest(const string& key, const string& id, const string& host) :
+    key_(key), ID_(id), host_(host), bio_(NULL), ctx_(NULL){
 }
 
 //This method returns the content length of the http response.
@@ -166,7 +166,7 @@ void HTTPRequest::init(){
     }
 
     //Attempts a connection
-    BIO_set_conn_hostname(bio_, (host + ":" + port_ + "asdfas").c_str());
+    BIO_set_conn_hostname(bio_, (host_ + ":" + port_ + "asdfas").c_str());
 
     //Check connection
     if(BIO_do_connect(bio_) <= 0){
