@@ -1,4 +1,5 @@
 #include <iostream>
+#include <sstream>
 #include "openssl/bio.h"
 #include "openssl/ssl.h"
 #include "openssl/err.h"
