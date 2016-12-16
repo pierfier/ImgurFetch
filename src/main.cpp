@@ -53,7 +53,13 @@ int main(int argc, char *argv[]){
             string id;
      		
             //Get the Client ID
-            ifstream in("res/key.txt");//TODO need to change this relative path
+            ifstream in("res/key.txt");
+
+            //Check if the file exists
+            if(!in.good()){
+                cout << "No file found. There must be a key.txt in directory res/" << endl;
+                exit(1);
+            }
 
             string key;
 

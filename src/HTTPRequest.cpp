@@ -173,7 +173,7 @@ void HTTPRequest::init(){
     if(BIO_do_connect(bio_) <= 0){
         cerr << "Connection Failed" << endl;
         BIO_free_all(bio_);
-        SSL_CTX_free(&ctx_);
+        SSL_CTX_free(ctx_);
         exit(1);
     }
 
@@ -198,7 +198,7 @@ void HTTPRequest::init(){
 //Clean SSL context
 HTTPRequest::~HTTPRequest(){
     BIO_free_all(bio_);
-    SSL_CTX_free(&ctx_);
+    SSL_CTX_free(ctx_);
 }
 
 /* @param bio_ is the pointer to a BIO object used to send a request and read in a response
