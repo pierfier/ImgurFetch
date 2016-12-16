@@ -1,2 +1,3 @@
 ------------------- TODOs -----------------------
-#1: Actually organize everything into classes
+#1[Done]: Actually organize everything into classes
+#2: Create a Thread pool model, and a queue to grab all of the images
