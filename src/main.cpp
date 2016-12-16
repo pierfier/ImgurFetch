@@ -64,7 +64,8 @@ int main(int argc, char *argv[]){
             string key;
 
             in >> key;
-
+            
+            //This is the application's id
             ifstream idIn("id.txt");
 
             idIn >> id;
