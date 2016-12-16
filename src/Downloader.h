@@ -5,11 +5,12 @@
 
 class Downloader{
     public:
-        Downloader(const string & key_, const string& id_);
+        Downloader(const string & key_, const string& id_, const string& host);
         void getImages();
         ~Downloader();
     private:
         string key_;
+        string host_;
         string id_;
         HTTPRequest * request_;
 };

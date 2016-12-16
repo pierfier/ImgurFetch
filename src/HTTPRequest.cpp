@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <sstream>
 #include "openssl/bio.h"
 #include "openssl/ssl.h"
@@ -8,12 +9,12 @@
 using namespace std;
 
 //Default Constructor
-HTTPRequest::HTTPRequest() : bio_(NULL), ctx_(NULL),
+HTTPRequest::HTTPRequest() : 
     key_(""), ID_(""), host_(""){}
 
 //Initial Values Constructor
 HTTPRequest::HTTPRequest(const string& key, const string& id, const string& host) :
-    key_(key), ID_(id), host_(host), bio_(NULL), ctx_(NULL){
+    key_(key), ID_(id), host_(host){
 }
 
 //This method returns the content length of the http response.
@@ -71,7 +72,7 @@ void HTTPRequest::getImages(const string & response){
 
         request += "\r\nHost: i.imgur.com\r\n";
         
-        request += "Authorization: Client-ID " + id + "\r\n";
+        request += "Authorization: Client-ID " + ID_ + "\r\n";
         
         request += "Connection: keep-alive\r\n\r\n";
 
@@ -88,7 +89,7 @@ void HTTPRequest::getImages(const string & response){
 
         //Read in the response
         //And then write to image file
-        ofstream out(("image" + ss.str()  + ".jpg").c_str(), ofstream::binary);
+        ofstream out(("image" + ss.str()  + ".jpg").c_str(), std::ofstream::binary);
          
         string header;
         
@@ -204,7 +205,7 @@ HTTPRequest::~HTTPRequest(){
  * @param response is how the resulting xml is saved
  * This method returns the response from a field search
 */
-void HTTPRequest::requestResponse(string& response){
+void HTTPRequest::requestLinks(string& response){
      //Connection has been established
     //Searching can now be done
     
@@ -231,7 +232,7 @@ void HTTPRequest::requestResponse(string& response){
  
     string header;
 
-    getHeader(bio_, header);
+    getHeader(header);
 
     length = getContentLength(header);
 

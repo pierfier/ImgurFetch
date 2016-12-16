@@ -64,7 +64,7 @@ int main(int argc, char *argv[]){
             idIn >> id;
 
             //Object that handles the downloading of images from album with key "key"
-            Downloader * downloader = new Downloader(key, id);
+            Downloader * downloader = new Downloader(key, id, "imgur.com");
             
             //Method to actually get Images
             downloader->getImages();

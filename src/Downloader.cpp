@@ -10,11 +10,11 @@ Downloader::~Downloader(){
 //Uses a single HTTPRequest object to download the images
 void Downloader::getImages(){
     string linksXML;
-    request->requestLinks(linksXML);
-    request->getImages(linksXML);
+    request_->requestLinks(linksXML);
+    request_->getImages(linksXML);
 }
 
-Downloader::Downloader(const string& key, const string & id) : 
-                                           key_(key), id_(id) {
-    request_ = new HTTPRequest(key, id);
+Downloader::Downloader(const string& key, const string & id, const string & host) : 
+                                           key_(key), id_(id), host_(host) {
+    request_ = new HTTPRequest(key, id, host);
 }
