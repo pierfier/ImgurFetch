@@ -78,7 +78,7 @@ void HTTPRequest::getImages(const string & response){
 
         //Send request
         if ( BIO_write(bio_, request.c_str(), request.size()) <= 0) {
-            cout << "Write Failed" << endl;
+            cout << "Unable to get image at link: " << link << endl;
             exit(1);
         }
 
@@ -212,13 +212,18 @@ void HTTPRequest::requestLinks(string& response){
     string request;
     
     //Write the GET header
-    request = "GET /3/album/" + ID_ + "/images.xml";
+    request = "GET /3/album/" + key_ + "/images.xml";
 
-    request += " HTTP/1.1";
+    request += " HTTP/1.1\r\n";
 
-    request += "Authorization: Client-ID " + key_ + "\r\n";
+    request += "Host: api.imgur.com\r\n";
+
+    request += "Authorization: Client-ID " + ID_ + "\r\n";
 
     request += "Connection: alive\r\n\r\n";
+
+    //DEBUG
+    cout << request;
 
     if ( BIO_write(bio_, request.c_str(), request.size()) <= 0) {
         cout << "Write Failed" << endl;
