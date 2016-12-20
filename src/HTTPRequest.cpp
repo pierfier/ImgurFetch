@@ -224,9 +224,10 @@ void HTTPRequest::requestLinks(string& response){
 
     //DEBUG
     cout << request;
-
     if ( BIO_write(bio_, request.c_str(), request.size()) <= 0) {
-        cout << "Write Failed" << endl;
+        cout << "Album request failed" << endl;
+        cout << "The bio object is " << bio_ << endl;
+        cout << (BIO_should_retry(bio_)) << endl;
         exit(1);
     }
     BIO_flush(bio_);
