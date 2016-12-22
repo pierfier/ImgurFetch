@@ -10,11 +10,18 @@ using namespace std;
 
 //Default Constructor
 HTTPRequest::HTTPRequest() : 
-    key_(""), ID_(""), host_(""){}
+    key_(""), ID_(""), host_(""){
+    
+    port_ = string("443");        
+    init();
+}
 
 //Initial Values Constructor
 HTTPRequest::HTTPRequest(const string& key, const string& id, const string& host) :
     key_(key), ID_(id), host_(host){
+    
+    port_ = string("443");    
+    init();    
 }
 
 //This method returns the content length of the http response.
@@ -89,7 +96,7 @@ void HTTPRequest::getImages(const string & response){
 
         //Read in the response
         //And then write to image file
-        ofstream out(("image" + ss.str()  + ".jpg").c_str(), std::ofstream::binary);
+        ofstream out(("res/image" + ss.str()  + ".jpg").c_str(), std::ofstream::binary);
          
         string header;
         
@@ -167,7 +174,7 @@ void HTTPRequest::init(){
     }
 
     //Attempts a connection
-    BIO_set_conn_hostname(bio_, (host_ + ":" + port_ + "asdfas").c_str());
+    BIO_set_conn_hostname(bio_, (host_ + ":" + port_).c_str());
 
     //Check connection
     if(BIO_do_connect(bio_) <= 0){
@@ -226,8 +233,6 @@ void HTTPRequest::requestLinks(string& response){
     cout << request;
     if ( BIO_write(bio_, request.c_str(), request.size()) <= 0) {
         cout << "Album request failed" << endl;
-        cout << "The bio object is " << bio_ << endl;
-        cout << (BIO_should_retry(bio_)) << endl;
         exit(1);
     }
     BIO_flush(bio_);
