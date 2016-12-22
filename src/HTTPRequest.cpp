@@ -75,9 +75,9 @@ void HTTPRequest::getImages(const string & response){
         
         string request = "GET /" + link;
         
-        request += " HTTP/1.1";
+        request += " HTTP/1.1\r\n";
 
-        request += "\r\nHost: i.imgur.com\r\n";
+        request += "Host: i.imgur.com\r\n";
         
         request += "Authorization: Client-ID " + ID_ + "\r\n";
         
