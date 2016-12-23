@@ -4,9 +4,9 @@
 
 using namespace std;
 
-class XHTMLWriter{
+class epubCompiler{
     public:     
-        XHTMLWriter(const string& fileName, const string& title, const string& author);
+        epubCompiler(const string& fileName, const string& title, const string& author);
         
         //Writes in all of the necessary
         void addMetaData();
@@ -18,7 +18,7 @@ class XHTMLWriter{
 
         void compileEPUB();
 
-        ~XHTMLWriter();
+        ~epubCompiler();
     private:
         void init();
 

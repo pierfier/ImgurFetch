@@ -1,11 +1,11 @@
-#include "XHTMLwrier.h"
+#include "epubCompiler.h"
 #include <string>
 #include <iostream>
 #include <fstream>
 
 using namespace std;
 
-XHTMLWriter::XHTMLWriter(const string& fileName, const string & title,
+epubCompiler::epubCompiler(const string& fileName, const string & title,
             const string& author) :
                 fileName_(fileName), title_(title), author_(author){
     
@@ -14,16 +14,16 @@ XHTMLWriter::XHTMLWriter(const string& fileName, const string & title,
 
 }
 
-void XHTMLWriter::addMetaData(){
+void epubCompiler::addMetaData(){
     
     
 }
 
-void XHTMLWriter::writeImage(const string& imageFileName){
+void epubCompiler::writeImage(const string& imageFileName){
     
 }
 
-void XHTMLWriter::init(){
+void epubCompiler::init(){
     //Create the directory that will contain 
     system("mkdir " + fileName_);
 }
