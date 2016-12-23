@@ -11,7 +11,6 @@ epubCompiler::epubCompiler(const string& fileName, const string & title,
     
     xhtmlFile_ = string("");
     contents_ = string("<?xml version="1.0" encoding="UTF-8"??>\n");
-
 }
 
 void epubCompiler::addMetaData(){
