@@ -15,7 +15,16 @@ class epubCompiler{
         //to read in the xhtml. It appends the tag to the end of the 
         //file
         void addImage(const string& fileName);
-
+        
+        //Depending on what is written in all of these,
+        //they could all be under one method
+        void createMimeType();
+        void createMETAINF();
+        void createOEBPS();
+        void createImagesFolder();
+        void createContentFile();
+        void createXHTMLContents();
+        
         void compileEPUB();
 
         ~epubCompiler();
