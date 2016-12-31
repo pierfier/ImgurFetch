@@ -1,2 +1,2 @@
 g++ src/*.cpp -lssl -lcrypto
-./a.out
+./a.out -g

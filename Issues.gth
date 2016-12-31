@@ -1,5 +1,5 @@
 ---------------------- Issues: ----------------------
-Issue #1: Future problem maybe. In order to get the image files,
+Issue #1[Solved]: Future problem maybe. In order to get the image files,
 it has to download from each link. The loop has to be carefully done so that
 the program does not go over the ratelimit. I suggest trial by error in looping
 through a saved response. Also, I would have the program check for number of
@@ -20,3 +20,5 @@ Issue #5: Makefile not working the way I want it to.
 Issue #6: Try to use multithreading
 
 Issue #7: The images are not clear. Possibly do a deconvolution?
+
+Issue #8: For some reason, one of the responses had extra links

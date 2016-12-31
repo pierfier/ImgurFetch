@@ -1,3 +1,4 @@
 ------------------- TODOs -----------------------
 #1[Done]: Actually organize everything into classes
 #2: Create a Thread pool model, and a queue to grab all of the images
+#3: Have a way for the program to add onto the images list without overwritting already downloaded images

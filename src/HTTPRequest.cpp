@@ -10,11 +10,18 @@ using namespace std;
 
 //Default Constructor
 HTTPRequest::HTTPRequest() : 
-    key_(""), ID_(""), host_(""){}
+    key_(""), ID_(""), host_(""){
+    
+    port_ = string("443");        
+    init();
+}
 
 //Initial Values Constructor
 HTTPRequest::HTTPRequest(const string& key, const string& id, const string& host) :
     key_(key), ID_(id), host_(host){
+    
+    port_ = string("443");    
+    init();    
 }
 
 //This method returns the content length of the http response.
@@ -65,9 +72,9 @@ void HTTPRequest::getImages(const string & response){
         
         string request = "GET /" + link;
         
-        request += " HTTP/1.1";
+        request += " HTTP/1.1\r\n";
 
-        request += "\r\nHost: i.imgur.com\r\n";
+        request += "Host: i.imgur.com\r\n";
         
         request += "Authorization: Client-ID " + ID_ + "\r\n";
         
@@ -75,7 +82,7 @@ void HTTPRequest::getImages(const string & response){
 
         //Send request
         if ( BIO_write(bio_, request.c_str(), request.size()) <= 0) {
-            cout << "Write Failed" << endl;
+            cout << "Unable to get image at link: " << link << endl;
             exit(1);
         }
 
@@ -86,7 +93,7 @@ void HTTPRequest::getImages(const string & response){
 
         //Read in the response
         //And then write to image file
-        ofstream out(("image" + ss.str()  + ".jpg").c_str(), std::ofstream::binary);
+        ofstream out(("res/image" + ss.str()  + ".jpg").c_str(), std::ofstream::binary);
          
         string header;
         
@@ -164,7 +171,7 @@ void HTTPRequest::init(){
     }
 
     //Attempts a connection
-    BIO_set_conn_hostname(bio_, (host_ + ":" + port_ + "asdfas").c_str());
+    BIO_set_conn_hostname(bio_, (host_ + ":" + port_).c_str());
 
     //Check connection
     if(BIO_do_connect(bio_) <= 0){
@@ -221,9 +228,8 @@ void HTTPRequest::requestLinks(string& response){
 
     //DEBUG
     cout << request;
-
     if ( BIO_write(bio_, request.c_str(), request.size()) <= 0) {
-        cout << "Could not send request" << endl;
+        cout << "Album request failed" << endl;
         exit(1);
     }
     
