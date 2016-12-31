@@ -68,6 +68,9 @@ void HTTPRequest::getImages(const string & response){
             link += response[i];
         }
 
+        //DEBUG
+        cout << link << endl;
+
         //Setup request to grab image
         
         string request = "GET /" + link;

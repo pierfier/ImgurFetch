@@ -19,6 +19,5 @@ Issue #5: Makefile not working the way I want it to.
 
 Issue #6: Try to use multithreading
 
-Issue #7: The images are not clear. Possibly do a deconvolution?
-
-Issue #8: For some reason, one of the responses had extra links
+Issue #8: For some reason, one of the responses had extra links. 
+    There is something wrong at how it looks up the links

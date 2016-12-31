@@ -8,8 +8,6 @@ using namespace std;
 epubCompiler::epubCompiler(const string& fileName, const string & title,
             const string& author) :
                 fileName_(fileName), title_(title), author_(author){
-    
-    contents_ = string("<?xml version=\"1.0\" encoding=\"UTF-8\"??>\n");
 }
 
 //Creates mimetype file with a single line
@@ -28,7 +26,8 @@ void epubCompiler::createMimeType(){
 }
 
 //Creates the META-INF Folder and its contents
-void createMETAINF(){
+void epubCompiler::createMETAINF(){
+    cout << fileName_;
     ofstream out(string(fileName_ + "META-INF/container.xml").c_str());
 
     //Check file created
@@ -44,12 +43,4 @@ void createMETAINF(){
     out << "</rootfiles>" << endl;
     out << "</container>" << endl;
     out.close();
-}
-
-void epubCompiler::writeImage(const string& imageFileName){
-    
-}
-
-void epubCompiler::init(){
-    
 }

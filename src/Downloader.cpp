@@ -13,7 +13,7 @@ void Downloader::getImages(){
     request_->requestLinks(linksXML);
     
     //DEBUG
-    cout << linksXML << endl;
+    //cout << linksXML << endl;
 
     request_->getImages(linksXML);
 }
