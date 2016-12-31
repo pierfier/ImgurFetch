@@ -5,6 +5,10 @@
 using namespace std;
 
 class epubCompiler{
+
+    //Abstract Function: creates content of an epub file and then places any existing images in res/ and embeds them into the epub file in the order of their
+    //numbers
+    
     public:     
         epubCompiler(const string& fileName, const string& title, const string& author);
         
@@ -30,10 +34,6 @@ class epubCompiler{
         ~epubCompiler();
     private:
         void init();
-
-        //
-        string xhtmlFile_;
-        string contents_;
 
         //Attributes to the ebook
         string fileName_;

@@ -11,6 +11,10 @@ Downloader::~Downloader(){
 void Downloader::getImages(){
     string linksXML;
     request_->requestLinks(linksXML);
+    
+    //DEBUG
+    cout << linksXML << endl;
+
     request_->getImages(linksXML);
 }
 
