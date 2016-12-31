@@ -44,3 +44,26 @@ void epubCompiler::createMETAINF(){
     out << "</container>" << endl;
     out.close();
 }
+
+void epubCompiler::startContentOPF(){
+    ofsream out();
+
+    //Check file created
+    if(!out.is_open()){
+        cerr << "Content Manifest not created" << endl;
+        exit(1);
+    }
+
+    //Write all of the data
+    out << "<?xml version=\"1.0\" encoding=\"UTF-8\"??>" << endl;
+    out << "<package xmlns=\"http://www.idpf.org/2007/opf\" unique-identifier=\"BookID\" version=\"2.0\" >" << endl;
+    out << "<metadata xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:opf=\"http://www.idpf.org/2007/opf\">" << endl;
+    out << "<dc:title>" << title_ << "</dc:title>" << endl;
+    out << "<dc:creator opf:role=\"aut\">Yoda47</dc:creator>" << endl;
+    out << "<dc:language>en-US</dc:language>" << endl; 
+    out << "<dc:rights>Imgur</dc:rights>" << endl;
+    out << "<dc:publisher> Imgur website</dc:publisher>" << endl;
+    out << "<dc:identifier id=\"BookID\" opf:scheme=\"UUID\">qwertystorm1234567890</dc:identifier>" << endl;
+    out << "</metadata>" << endl;
+    
+}

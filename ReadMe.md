@@ -9,3 +9,5 @@ directly from imgur.
 The program will read in a key from key.txt in res/ directory
 
 Album ID is read from a file: ID.txt
+
+The epub file creation is based on epub file tutorial

@@ -57,23 +57,19 @@ void HTTPRequest::getImages(const string & response){
     int numIm = 0;
 
     //Loop through the xml and download the images from each link
-    while( (i = response.find("link", i)) != string::npos /*&& numIm < 10*/){ //TODO here is the condition that limits number of images downloaded
+    while( (i = response.find("<link>", i)) != string::npos /*&& numIm < 10*/){ //TODO here is the condition that limits number of images downloaded
         ++numIm;
-
-        i = response.find("com", i);
-        i += 4;
-
+        
+        i += 6;
+        
         link = "";
         for(;response[i] != '<'; ++i){
             link += response[i];
         }
 
-        //DEBUG
-        cout << link << endl;
-
         //Setup request to grab image
         
-        string request = "GET /" + link;
+        string request = "GET " + link.substr(link.find_last_of("/"), string::npos);
         
         request += " HTTP/1.1\r\n";
 
@@ -82,6 +78,9 @@ void HTTPRequest::getImages(const string & response){
         request += "Authorization: Client-ID " + ID_ + "\r\n";
         
         request += "Connection: keep-alive\r\n\r\n";
+
+        //DEBUG
+        cout << request << endl;
 
         //Send request
         if ( BIO_write(bio_, request.c_str(), request.size()) <= 0) {
