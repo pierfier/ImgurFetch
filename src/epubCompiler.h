@@ -33,7 +33,8 @@ class epubCompiler{
         //Starts the creation of the files
         void init();
         void startContentOPF();
-        
+        void finishContentOPF();
+
         //Attributes to the ebook
         string fileName_;
         string title_;

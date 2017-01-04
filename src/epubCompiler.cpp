@@ -45,8 +45,10 @@ void epubCompiler::createMETAINF(){
     out.close();
 }
 
+//This method adds to Content.opf up until
+//the middle of the manifest where images are being referenced
 void epubCompiler::startContentOPF(){
-    ofsream out();
+    ofsream out(string(fileName_ + ).c_str()); //TODO need to finish this statement
 
     //Check file created
     if(!out.is_open()){
@@ -65,5 +67,28 @@ void epubCompiler::startContentOPF(){
     out << "<dc:publisher> Imgur website</dc:publisher>" << endl;
     out << "<dc:identifier id=\"BookID\" opf:scheme=\"UUID\">qwertystorm1234567890</dc:identifier>" << endl;
     out << "</metadata>" << endl;
+    out << "<manifest>" << endl;
+    out << "<item id=\"ncx\" href=\"toc.ncx\" media-type=\"application/x-dtbncx+xml\" />" << endl;
+    out << "<item id=\"titlepage\" href=\"title_page.xhtml\" media-type=\"application/xhtml+xml\" />" << endl;
+    out << "<item id=\"book\" href=\"book.xhtml\" media-type=\"application/xhtml+xml\" />" << endl;
     
+    out.close();
+}
+
+void epubCompiler::finishContentOPF(){
+     ofsream out(string(fileName_ + ).c_str(), ofstream::app); //TODO need to finish this statement
+
+    //Check file created
+    if(!out.is_open()){
+        cerr << "Unable to reopen content.opf" << endl;
+        exit(1);
+    }
+    
+    out << "</manifest>" << endl;
+    out << "<spine toc=\"ncx\">" << endl;
+    out << "<itemref idref=\"titlepage\" />" << endl;
+    out << "<itemref idref=\"book\" />" << endl;
+    out << "</spine>" << endl;
+    out << "</package>" << endl;
+    out.close();
 }
