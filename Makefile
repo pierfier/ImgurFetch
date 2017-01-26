@@ -5,8 +5,8 @@ LIBS=-lssl -lcrypto
 C_OBJ=-c
 C_LINK=-o
 
-%.o: *.cpp 
-	$(CC) $(DEBUG) $(C_OBJ) *.cpp
+%.o: src/*.cpp 
+	$(CC) $(DEBUG) $(C_OBJ) src/*.cpp
 
 %.o:*.h
 
