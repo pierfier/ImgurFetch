@@ -5,7 +5,7 @@ using namespace std;
 
 //This method returns the content length of the http response.
 //The bio should have read up to \n\n 
-int HttPRequest::getContentLength(const string& header){
+int HttpRequest::getContentLength(const string& header){
     int i = header.find("Content-Length: ");
     i+= 16;
     
@@ -20,7 +20,7 @@ int HttPRequest::getContentLength(const string& header){
 }
 
 //Gets the response header
-void HttPRequest::getHeader(BIO * bio, string& header){
+void HttpRequest::getHeader(BIO * bio, string& header){
     char cur;
     while (BIO_read(bio, &cur, 1) > 0 ){
         header += cur;
@@ -45,7 +45,7 @@ void HttPRequest::getHeader(BIO * bio, string& header){
 /* This method returns the response from a field search
  *
 */
-void requestResponse(BIO * bio, string id, string& album, string& response){
+void HttpRequest::requestResponse(BIO * bio, string id, string& album, string& response){
      //Connection has been established
     //Searching can now be done
     
@@ -54,7 +54,7 @@ void requestResponse(BIO * bio, string id, string& album, string& response){
     //Write the GET header
     request = "GET /3/album/" + album + "/images.xml";
 
-    request += " HTTP/1.1";
+    request += " HttP/1.1";
 
     request += "\r\nHost: api.imgur.com\r\n";
     
