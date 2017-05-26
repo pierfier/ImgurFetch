@@ -214,7 +214,8 @@ int main(int argc, char *argv[]){
             cin >> album;
 
             //Request response
-            requestResponse(bio, id, album, response);
+            //TODO this is to be done in the httprequest class
+            //requestResponse(bio, id, album, response);
 
             //------------------------ Code to Compile images into a pdf ---------------
   
