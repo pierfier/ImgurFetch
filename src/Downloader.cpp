@@ -4,8 +4,9 @@
 using namespace std;
 
 Downloader::Downloader(const string& key, const string & id, 
-                        const string & host) : 
-                        key_(key), id_(id), host_(host) {
+                        const string & host, int num) : 
+                        key_(key), id_(id), host_(host),
+                        numThreads_(num){
     
     request_ = new HTTPRequest(key, id, host);
 }
