@@ -1,7 +1,11 @@
 #ifndef DOWNLOADER_H
 #define DOWNLOADER_H
 #include"HTTPRequest.h"
-#include<string>
+#include <string>
+#include <vector>
+#include <thread>
+
+using namespace std;
 
 class Downloader{
     public:
@@ -13,6 +17,7 @@ class Downloader{
         string host_;
         string id_;
         int numThreads_;
+        vector<thread> workers;
         HTTPRequest * request_;
 };
 #endif
