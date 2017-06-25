@@ -30,8 +30,14 @@ void Downloader::storeLinks(){
     }
 }
 
+void Downloader::startDownload(){
+    for(int i = 0; i < num_threads_; ++i){
+        workers_.push_back(thread(downloadImage));
+    }
+}
+
 void Downloader::downloadImage(){
-    HTTPRequest request(key, id, host); //TODO make this global for all classes
+    HTTPRequest request(host); //TODO make this global for all classes
     
     while(true){
         ImageLink imLink;
@@ -59,5 +65,11 @@ void Downloader::downloadImage(){
 
             cout << "Downloaded image " + imLink.i << endl; 
         }
+    }
+}
+
+Downloader::~Downloader(){
+    for(int i = 0; i < workers_.size(); ++i){
+        workers_[i].join();
     }
 }

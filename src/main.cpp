@@ -50,7 +50,7 @@ int main(int argc, char *argv[]){
         }else if(string(argv[i]) == "-g"){
             
             //Get the Client ID
-            ifstream in("res/key.txt");
+            ifstream in(argv[i+1]);
 
             //Check if the file exists
             if(!in.good()){
@@ -61,7 +61,7 @@ int main(int argc, char *argv[]){
             in >> global::key;
             
             //This is the application's id
-            ifstream idIn("id.txt");
+            ifstream idIn(argv[i+2]);
 
             idIn >> global::id;
 

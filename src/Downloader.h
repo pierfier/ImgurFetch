@@ -27,6 +27,9 @@ class Downloader{
 
         //Create all of the threads and start downloading
         void startDownload();
+        
+        //Wait for all of the threads to join
+        ~Downloader();
     private:
         //Methods
         
