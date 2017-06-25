@@ -1,5 +1,5 @@
-#ifndef _THREAD_POOL_
-#define _THREAD_POOL_
+#ifndef _DOWNLOADER_
+#define _DOWNLOADER_
 
 #include <iostream>
 #include <thread>
@@ -16,10 +16,11 @@ struct ImageLink{
     int i;
 };
 
-class ThreadPool{
+class Downloader{
     public:
-        ThreadPool();
-        
+        Downloader() : num_threads_(1) {}
+        Downloader(int num_thread) : num_threads_(num_thread){}
+
         //Request file with all of the image links,
         //parse links, and add them to the queue
         void storeLinks();
@@ -31,7 +32,6 @@ class ThreadPool{
         
         //Grab next image from queue and 
         void downloadImage();
-        
 
         //Variables
         vector<thread> workers_;
