@@ -49,8 +49,6 @@ int main(int argc, char *argv[]){
             compileEPUB(atoi(argv[i+1]));
         }else if(string(argv[i]) == "-g"){
             
-            string id;
-     		
             //Get the Client ID
             ifstream in("res/key.txt");
 
@@ -60,17 +58,15 @@ int main(int argc, char *argv[]){
                 exit(1);
             }
 
-            string key;
-
-            in >> key;
+            in >> global::key;
             
             //This is the application's id
             ifstream idIn("id.txt");
 
-            idIn >> id;
+            idIn >> global::id;
 
             //Object that handles the downloading of images from album with key "key"
-            Downloader * downloader = new Downloader(key, id, "api.imgur.com");
+            Downloader * downloader = new Downloader("api.imgur.com");
             
             //Method to actually get Images
             downloader->getImages();

@@ -33,13 +33,13 @@ void HTTPRequest::requestLinks(string& response){
     string request;
     
     //Write the GET header
-    request = "GET /3/album/" + key_ + "/images.xml";
+    request = "GET /3/album/" + global::key + "/images.xml";
 
     request += " HTTP/1.1\r\n";
 
     request += "Host: api.imgur.com\r\n";
 
-    request += "Authorization: Client-ID " + ID_ + "\r\n";
+    request += "Authorization: Client-ID " + global::id + "\r\n";
 
     request += "Connection: alive\r\n\r\n";
 
@@ -58,9 +58,9 @@ void HTTPRequest::requestLinks(string& response){
  
     string header;
 
-    getHeader(header);
+    readInHeader(header);
 
-    length = getContentLength(header);
+    length = parseContentLength(header);
 
     //Read in the xml
     for(int i = 0; i < length; ++i){
@@ -74,7 +74,7 @@ void HTTPRequest::requestLinks(string& response){
 
 //This method returns the content length of the http response.
 //The bio_ should have read up to \n\n 
-int HTTPRequest::getContentLength(const string& header){
+int HTTPRequest::parseContentLength(const string& header){
     int i = header.find("Content-Length: ");
     i+= 16;
     
@@ -101,7 +101,7 @@ void HTTPRequest::getImageToFile(const string& link,
     
     request += "Host: i.imgur.com\r\n";
       
-    request += "Authorization: Client-ID " + ID_ + "\r\n";
+    request += "Authorization: Client-ID " + global::id + "\r\n";
       
     request += "Connection: keep-alive\r\n\r\n";
 
@@ -119,22 +119,21 @@ void HTTPRequest::getImageToFile(const string& link,
     stringstream ss;
     ss << numIm;
 
-    //Read in the response
-    //And then write to image file
-    ofstream out(fileName.c_str(), std::ofstream::binary);
-    
     string header;
     
-    getHeader(header);
+    readInHeader(header);
 
-    int length = getContentLength(header);
+    int length = parseContentLength(header);
  
     //DEBUG
     //cout << header << endl;
     //cout << length << endl;
     //exit(1);
 
-
+    //Read in the response
+    //And then write to image file
+    ofstream out(fileName.c_str(), std::ofstream::binary);
+    
     //Write image to file
     for(int i = 0; i < length; ++i){
         BIO_read(bio_, &cur, 1);
@@ -142,39 +141,8 @@ void HTTPRequest::getImageToFile(const string& link,
     }
 }
 
-//Loop through the response to get all of the links and download
-//Each image
-void HTTPRequest::getImages(const string & response){
-    
-    //Find the links for the images and then download them
-    string link;
-    
-    //Buffer for reading in data
-    char cur;
-
-    //Index to indicate progress along the album xml structure
-    int i = 0;
-    
-    //Stores the number of images that were downloaded
-    int numIm = 0;
-
-    //Loop through the xml and download the images from each link
-    while( (i = response.find("<link>", i)) != string::npos /*&& numIm < 10*/){ //TODO here is the condition that limits number of images downloaded
-        ++numIm;
-        
-        i += 6;
-        
-        link = "";
-        for(;response[i] != '<'; ++i){
-            link += response[i];
-        }
-
-        
-    }
-}
-
 //Gets the response header
-void HTTPRequest::getHeader(string& header){
+void HTTPRequest::readInHeader(string& header){
     char cur;
     while (BIO_read(bio_, &cur, 1) > 0 ){
         header += cur;
