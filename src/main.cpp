@@ -11,10 +11,9 @@
 #include <fstream>
 #include <string>
 #include "Downloader.h"
+#include "main.h"
 
 using namespace std;
-
-
 
 //Generates the epubfile
 //This is used to assume that all of the images are downloaded
