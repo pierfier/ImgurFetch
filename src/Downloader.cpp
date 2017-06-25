@@ -10,6 +10,8 @@ void Downloader::storeLinks(){
     
     int index = 0;
     int numImages = 0;
+    
+    ImageLink temp;
 
     while((index = response.find("<link>", index)) != string::npos){
         ++numImages;
@@ -18,8 +20,13 @@ void Downloader::storeLinks(){
 
         //Fully read in the link
         for(;response[index] !- "<"; ++i){
-            
+            link += response[index];
         }
+        temp.link = link;
+        temp.i = numImages;
+
+        //Add link to the queue
+        imQueue_.push_back(temp);
     }
 }
 

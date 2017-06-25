@@ -5,24 +5,72 @@
 #include "openssl/ssl.h"
 #include "openssl/err.h"
 #include "HTTPRequest.h"
+#include "main.h"
 
 using namespace std;
 
 //Default Constructor
-HTTPRequest::HTTPRequest() : 
-    key_(""), ID_(""), host_(""){
-    
+HTTPRequest::HTTPRequest() : host_(""){
     port_ = string("443");        
     init();
 }
 
 //Initial Values Constructor
-HTTPRequest::HTTPRequest(const string& key, const string& id, const string& host) :
-    key_(key), ID_(id), host_(host){
+HTTPRequest::HTTPRequest(const string& host) :
+                         host_(host){
     
     port_ = string("443");    
     init();    
 }
+
+/* @param response is how the resulting xml is saved
+ * This method returns the response from a field search
+*/
+void HTTPRequest::requestLinks(string& response){
+    //Connection has been established
+    //Searching can now be done
+    
+    string request;
+    
+    //Write the GET header
+    request = "GET /3/album/" + key_ + "/images.xml";
+
+    request += " HTTP/1.1\r\n";
+
+    request += "Host: api.imgur.com\r\n";
+
+    request += "Authorization: Client-ID " + ID_ + "\r\n";
+
+    request += "Connection: alive\r\n\r\n";
+
+    //DEBUG
+    cout << request;
+    if ( BIO_write(bio_, request.c_str(), request.size()) <= 0) {
+        cout << "Album request failed" << endl;
+        exit(1);
+    }
+    
+    BIO_flush(bio_);
+    
+    //Read in the response
+    char cur;
+    int length;
+ 
+    string header;
+
+    getHeader(header);
+
+    length = getContentLength(header);
+
+    //Read in the xml
+    for(int i = 0; i < length; ++i){
+        BIO_read(bio_, &cur, 1);
+        response += cur;
+    }
+    
+    //cout << response << endl;
+}
+
 
 //This method returns the content length of the http response.
 //The bio_ should have read up to \n\n 
@@ -38,6 +86,60 @@ int HTTPRequest::getContentLength(const string& header){
     }
 
     return atoi(num.c_str());
+}
+
+//Download the individual image file and write it to
+//local image file
+void HTTPRequest::getImageToFile(const string& link, 
+                                 const string& fileName){
+    string request;
+
+    //Setup request to grab image    
+    string request = "GET " + link.substr(link.find_last_of("/"), string::npos);
+       
+    request += " HTTP/1.1\r\n";
+    
+    request += "Host: i.imgur.com\r\n";
+      
+    request += "Authorization: Client-ID " + ID_ + "\r\n";
+      
+    request += "Connection: keep-alive\r\n\r\n";
+
+    //DEBUG
+    cout << request << endl;
+
+    //Send request
+    if ( BIO_write(bio_, request.c_str(), request.size()) <= 0) {
+        cout << "Unable to get image at link: " << link << endl;
+        exit(1);
+    }
+
+    BIO_flush(bio_);
+
+    stringstream ss;
+    ss << numIm;
+
+    //Read in the response
+    //And then write to image file
+    ofstream out(fileName.c_str(), std::ofstream::binary);
+    
+    string header;
+    
+    getHeader(header);
+
+    int length = getContentLength(header);
+ 
+    //DEBUG
+    //cout << header << endl;
+    //cout << length << endl;
+    //exit(1);
+
+
+    //Write image to file
+    for(int i = 0; i < length; ++i){
+        BIO_read(bio_, &cur, 1);
+        out.write(&cur, 1);
+    }
 }
 
 //Loop through the response to get all of the links and download
@@ -67,53 +169,7 @@ void HTTPRequest::getImages(const string & response){
             link += response[i];
         }
 
-        //Setup request to grab image
         
-        string request = "GET " + link.substr(link.find_last_of("/"), string::npos);
-        
-        request += " HTTP/1.1\r\n";
-
-        request += "Host: i.imgur.com\r\n";
-        
-        request += "Authorization: Client-ID " + ID_ + "\r\n";
-        
-        request += "Connection: keep-alive\r\n\r\n";
-
-        //DEBUG
-        cout << request << endl;
-
-        //Send request
-        if ( BIO_write(bio_, request.c_str(), request.size()) <= 0) {
-            cout << "Unable to get image at link: " << link << endl;
-            exit(1);
-        }
-
-        BIO_flush(bio_);
-
-        stringstream ss;
-        ss << numIm;
-
-        //Read in the response
-        //And then write to image file
-        ofstream out(("res/image" + ss.str()  + ".jpg").c_str(), std::ofstream::binary);
-         
-        string header;
-        
-        getHeader(header);
-
-        int length = getContentLength(header);
- 
-        //DEBUG
-        //cout << header << endl;
-        //cout << length << endl;
-        //exit(1);
-
-
-        //Write image to file
-        for(int i = 0; i < length; ++i){
-            BIO_read(bio_, &cur, 1);
-            out.write(&cur, 1);
-        }
     }
 }
 
@@ -207,51 +263,4 @@ HTTPRequest::~HTTPRequest(){
     SSL_CTX_free(ctx_);
 }
 
-/* @param bio_ is the pointer to a BIO object used to send a request and read in a response
- * @param response is how the resulting xml is saved
- * This method returns the response from a field search
-*/
-void HTTPRequest::requestLinks(string& response){
-     //Connection has been established
-    //Searching can now be done
-    
-    string request;
-    
-    //Write the GET header
-    request = "GET /3/album/" + key_ + "/images.xml";
 
-    request += " HTTP/1.1\r\n";
-
-    request += "Host: api.imgur.com\r\n";
-
-    request += "Authorization: Client-ID " + ID_ + "\r\n";
-
-    request += "Connection: alive\r\n\r\n";
-
-    //DEBUG
-    cout << request;
-    if ( BIO_write(bio_, request.c_str(), request.size()) <= 0) {
-        cout << "Album request failed" << endl;
-        exit(1);
-    }
-    
-    BIO_flush(bio_);
-    
-    //Read in the response
-    char cur;
-    int length;
- 
-    string header;
-
-    getHeader(header);
-
-    length = getContentLength(header);
-
-    //Read in the xml
-    for(int i = 0; i < length; ++i){
-        BIO_read(bio_, &cur, 1);
-        response += cur;
-    }
-    
-    //cout << response << endl;
-}

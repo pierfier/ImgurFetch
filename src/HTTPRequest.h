@@ -14,17 +14,11 @@ class HTTPRequest{
         //Constructor
         HTTPRequest();
         HTTPRequest(const string& host);
-		
-
-        //Reads in response header and writes it to variable header
-        //Only to be used after a request has been sent
-        void readInHeader(string& header);
+        
 
         //Send a request to grab the links for the images
         void requestLinks(string& response);
         
-        //Sets up all of the SSL environment variables
-        void init();
         
         //Grab an individual image with the link and write it to the given file
         void getImageToFile(const string& link, const string& fileName);
@@ -35,9 +29,15 @@ class HTTPRequest{
         //Methods
 
         //grabs the content length from the header
-        int parseContentLength(const string& header);
+        int parseContentLength(const string& header); //Primarily to get the size of the image
         
-
+        //Sets up all of the SSL environment variables
+        void init();
+        
+        //Reads in response header and writes it to the header variable
+        //Only to be used after a request has been sent
+        void readInHeader(string& header);
+        
         //Variables
         string host_;
         SSL_CTX * ctx_;
