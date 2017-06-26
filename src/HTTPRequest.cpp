@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -75,6 +76,7 @@ void HTTPRequest::requestLinks(string& response){
 //This method returns the content length of the http response.
 //The bio_ should have read up to \n\n 
 int HTTPRequest::parseContentLength(const string& header){
+
     int i = header.find("Content-Length: ");
     i+= 16;
     
@@ -143,6 +145,7 @@ void HTTPRequest::getImageToFile(const string& link,
 
 //Gets the response header
 void HTTPRequest::readInHeader(string& header){
+
     char cur;
     while (BIO_read(bio_, &cur, 1) > 0 ){
         header += cur;
@@ -230,5 +233,3 @@ HTTPRequest::~HTTPRequest(){
     BIO_free_all(bio_);
     SSL_CTX_free(ctx_);
 }
-
-
