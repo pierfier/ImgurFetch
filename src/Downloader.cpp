@@ -1,7 +1,10 @@
 #include "Downloader.h"
 #include <string>
 #include <sstream>
+#include <thread>
 #include "HTTPRequest.h"
+
+using namespace std;
 
 void Downloader::storeLinks(){
     string response, link;
