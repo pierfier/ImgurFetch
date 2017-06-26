@@ -5,6 +5,7 @@
 namespace global{
     extern int key;
     extern int id;
+    extern string host;
 }
 
 #endif

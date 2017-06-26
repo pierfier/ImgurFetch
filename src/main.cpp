@@ -40,7 +40,7 @@ void compileEPUB(int length){
 
 
 int main(int argc, char *argv[]){
-    
+    global::host = "api.imgur.com";
     //Check for certain arguments
     for(int i = 0; i < argc; ++i){
         if(string(argv[i]) == "-c"){
@@ -66,7 +66,7 @@ int main(int argc, char *argv[]){
             idIn >> global::id;
 
             //Object that handles the downloading of images from album with key "key"
-            Downloader * downloader = new Downloader("api.imgur.com");
+            Downloader * downloader = new Downloader();
             
             //Method to actually get Images
             downloader->getImages();

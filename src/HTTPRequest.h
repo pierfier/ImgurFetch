@@ -13,7 +13,7 @@ class HTTPRequest{
 	public:
         //Constructor
         HTTPRequest();
-        HTTPRequest(const string& host);
+        HTTPRequest();
         
 
         //Send a request to grab the links for the images
@@ -39,7 +39,6 @@ class HTTPRequest{
         void readInHeader(string& header);
         
         //Variables
-        string host_;
         SSL_CTX * ctx_;
         string port_;
         BIO * bio_;

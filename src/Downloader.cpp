@@ -19,7 +19,7 @@ void Downloader::storeLinks(){
         link = "";
 
         //Fully read in the link
-        for(;response[index] !- "<"; ++i){
+        for(; response[index] != "<"; ++index){
             link += response[index];
         }
         temp.link = link;
@@ -37,7 +37,7 @@ void Downloader::startDownload(){
 }
 
 void Downloader::downloadImage(){
-    HTTPRequest request(host); //TODO make this global for all classes
+    HTTPRequest request(); //TODO make this global for all classes
     
     while(true){
         ImageLink imLink;

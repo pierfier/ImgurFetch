@@ -6,6 +6,7 @@
 #include <mutex>
 #include <condition_variable>
 #include <vector>
+#include <deque>
 #include "HTTPRequest.h"
 
 using namespace std;

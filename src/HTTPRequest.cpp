@@ -11,14 +11,13 @@
 using namespace std;
 
 //Default Constructor
-HTTPRequest::HTTPRequest() : host_(""){
+HTTPRequest::HTTPRequest(){
     port_ = string("443");        
     init();
 }
 
 //Initial Values Constructor
-HTTPRequest::HTTPRequest(const string& host) :
-                         host_(host){
+HTTPRequest::HTTPRequest(){
     
     port_ = string("443");    
     init();    
@@ -200,7 +199,7 @@ void HTTPRequest::init(){
     }
 
     //Attempts a connection
-    BIO_set_conn_hostname(bio_, (host_ + ":" + port_).c_str());
+    BIO_set_conn_hostname(bio_, (global::host + ":" + port_).c_str());
 
     //Check connection
     if(BIO_do_connect(bio_) <= 0){
