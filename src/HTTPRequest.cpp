@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -14,13 +13,6 @@ using namespace std;
 HTTPRequest::HTTPRequest(){
     port_ = string("443");        
     init();
-}
-
-//Initial Values Constructor
-HTTPRequest::HTTPRequest(){
-    
-    port_ = string("443");    
-    init();    
 }
 
 /* @param response is how the resulting xml is saved
@@ -93,8 +85,6 @@ int HTTPRequest::parseContentLength(const string& header){
 //local image file
 void HTTPRequest::getImageToFile(const string& link, 
                                  const string& fileName){
-    string request;
-
     //Setup request to grab image    
     string request = "GET " + link.substr(link.find_last_of("/"), string::npos);
        
@@ -116,9 +106,6 @@ void HTTPRequest::getImageToFile(const string& link,
     }
 
     BIO_flush(bio_);
-
-    stringstream ss;
-    ss << numIm;
 
     string header;
     

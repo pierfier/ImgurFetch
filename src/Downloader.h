@@ -17,6 +17,17 @@ struct ImageLink{
     int i;
 };
 
+class Downloader;
+
+class Worker{
+    public:
+        Worker(Downloader& downloader) : downloader_(downloader){}
+        void operator()();
+    
+    private:
+        Downloader& downloader_;
+};
+
 class Downloader{
     public:
         Downloader() : num_threads_(1) {}
@@ -32,10 +43,7 @@ class Downloader{
         //Wait for all of the threads to join
         ~Downloader();
     private:
-        //Methods
-        
-        //Grab next image from queue and 
-        void downloadImage();
+        friend class Worker;
 
         //Variables
         vector<thread> workers_;

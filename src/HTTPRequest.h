@@ -13,8 +13,6 @@ class HTTPRequest{
 	public:
         //Constructor
         HTTPRequest();
-        HTTPRequest();
-        
 
         //Send a request to grab the links for the images
         void requestLinks(string& response);

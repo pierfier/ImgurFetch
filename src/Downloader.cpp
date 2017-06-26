@@ -1,10 +1,12 @@
 #include "Downloader.h"
 #include <string>
+#include <sstream>
+#include "HTTPRequest.h"
 
 void Downloader::storeLinks(){
     string response, link;
 
-    request.requestLinks(response);
+    request_.requestLinks(response);
 
     //Parse the links to the queue
     
@@ -19,7 +21,7 @@ void Downloader::storeLinks(){
         link = "";
 
         //Fully read in the link
-        for(; response[index] != "<"; ++index){
+        for(; response[index] != '<'; ++index){
             link += response[index];
         }
         temp.link = link;
@@ -32,25 +34,25 @@ void Downloader::storeLinks(){
 
 void Downloader::startDownload(){
     for(int i = 0; i < num_threads_; ++i){
-        workers_.push_back(thread(downloadImage));
+        workers_.push_back(thread(Worker(*this)));
     }
 }
 
-void Downloader::downloadImage(){
-    HTTPRequest request(); //TODO make this global for all classes
+void Worker::operator()(){
+    HTTPRequest request; 
     
     while(true){
         ImageLink imLink;
         {
             //Get the lock
-            unique_lock<mutex> lock(queue_mutex_);
+            unique_lock<mutex> lock(downloader_.queue_mutex_);
             
             //Exit if the queue is empty
-            if(imQueue_.empty()){
+            if(downloader_.imQueue_.empty()){
                 return;
             }
 
-            imLink = imQueue_.front();
+            imLink = downloader_.imQueue_.front();
             
             //release the lock
         }
@@ -61,7 +63,7 @@ void Downloader::downloadImage(){
 
         //DEBUG
         {
-            unique_lock<mutex> lock(debug_mutex_);
+            unique_lock<mutex> lock(downloader_.debug_mutex_);
 
             cout << "Downloaded image " + imLink.i << endl; 
         }
