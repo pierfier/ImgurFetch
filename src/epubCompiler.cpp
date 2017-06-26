@@ -48,7 +48,7 @@ void epubCompiler::createMETAINF(){
 //This method adds to Content.opf up until
 //the middle of the manifest where images are being referenced
 void epubCompiler::startContentOPF(){
-    ofstream out(string(fileName_ + ).c_str()); //TODO need to finish this statement
+    ofstream out(string(fileName_ + "").c_str()); //TODO need to finish this statement
 
     //Check file created
     if(!out.is_open()){
@@ -76,7 +76,7 @@ void epubCompiler::startContentOPF(){
 }
 
 void epubCompiler::finishContentOPF(){
-     ofstream out(string(fileName_ + ).c_str(), ofstream::app); //TODO need to finish this statement
+     ofstream out(string(fileName_ + "").c_str(), ofstream::app); //TODO need to finish this statement
 
     //Check file created
     if(!out.is_open()){

@@ -15,30 +15,6 @@
 
 using namespace std;
 
-//Generates the epubfile
-//This is used to assume that all of the images are downloaded
-void compileEPUB(int length){
-    string title = "";
-
-    cout << "Enter the name for the pdf: ";
-
-    cin >> title;
-    //Create Comic Title name
-
-    ofstream out(string(title + ".tex").c_str(), fstream::app);
-    
-    for(int i = 1; i < length; ++i){
-        out << "\\includegraphics[scale=.2]{image" << i << ".jpg}" << endl;   
-    }
-    
-    //End the tex document
-    out << "\\end{document}" << endl;
-
-    //TODO need to learn the actual methods for starting up processes
-    system(string("pdflatex  " + title + ".tex").c_str());
-}
-
-
 int main(int argc, char *argv[]){
     global::host = "api.imgur.com";
     
@@ -47,7 +23,7 @@ int main(int argc, char *argv[]){
         if(string(argv[i]) == "-c"){
             
             //The argument for compiling is the number of images to
-            compileEPUB(atoi(argv[i+1]));
+            //TODO figure out how to use the object
         }else if(string(argv[i]) == "-g"){
             
             //Get the Client ID
@@ -70,7 +46,8 @@ int main(int argc, char *argv[]){
             Downloader * downloader = new Downloader();
             
             //Method to actually get Images
-            downloader->getImages();
+            downloader->storeLinks();
+            downloader->startDownload();
 
         }else if(string(argv[i]) == "--help"){
             cout << "Usage: " << endl;
