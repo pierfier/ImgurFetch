@@ -85,6 +85,8 @@ int HTTPRequest::parseContentLength(const string& header){
 //local image file
 void HTTPRequest::getImageToFile(const string& link, 
                                  const string& fileName){
+    char cur;
+
     //Setup request to grab image    
     string request = "GET " + link.substr(link.find_last_of("/"), string::npos);
        

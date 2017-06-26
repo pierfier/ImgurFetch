@@ -41,6 +41,7 @@ void compileEPUB(int length){
 
 int main(int argc, char *argv[]){
     global::host = "api.imgur.com";
+    
     //Check for certain arguments
     for(int i = 0; i < argc; ++i){
         if(string(argv[i]) == "-c"){

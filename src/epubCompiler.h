@@ -38,4 +38,5 @@ class epubCompiler{
         //Attributes to the ebook
         string fileName_;
         string title_;
+        string author_;
 };
