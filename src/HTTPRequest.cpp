@@ -35,8 +35,6 @@ void HTTPRequest::requestLinks(string& response){
 
     request += "Connection: alive\r\n\r\n";
 
-    //DEBUG
-    cout << request;
     if ( BIO_write(bio_, request.c_str(), request.size()) <= 0) {
         cout << "Album request failed" << endl;
         exit(1);
@@ -96,9 +94,6 @@ void HTTPRequest::getImageToFile(const string& link,
       
     request += "Connection: keep-alive\r\n\r\n";
 
-    //DEBUG
-    cout << request << endl;
-
     //Send request
     if ( BIO_write(bio_, request.c_str(), request.size()) <= 0) {
         cout << "Unable to get image at link: " << link << endl;
@@ -114,8 +109,10 @@ void HTTPRequest::getImageToFile(const string& link,
     int length = parseContentLength(header);
  
     //DEBUG
-    //cout << header << endl;
-    //cout << length << endl;
+    cout << endl << endl;
+    cout << request << endl;
+    cout << header << endl;
+
     //exit(1);
 
     //Read in the response

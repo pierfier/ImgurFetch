@@ -2,6 +2,7 @@
 #include <string>
 #include <sstream>
 #include <thread>
+#include <mutex>
 #include "HTTPRequest.h"
 
 using namespace std;
@@ -20,7 +21,8 @@ void Downloader::storeLinks(){
 
     while((index = response.find("<link>", index)) != string::npos){
         ++numImages;
-        
+        index += 6;
+
         link = "";
 
         //Fully read in the link
@@ -32,7 +34,7 @@ void Downloader::storeLinks(){
         temp.i = numImages;
         
         //DEBUG
-        cout << link << endl;
+        cout << "Store image " << numImages << endl;
 
         //Add link to the queue
         imQueue_.push_back(temp);
@@ -52,17 +54,18 @@ void Worker::operator()(){
         ImageLink imLink;
         {
             //Get the lock
-            unique_lock<mutex> lock(downloader_.queue_mutex_);
-            
+            unique_lock<mutex> l(downloader_.queue_mutex_);
+                            
             //Exit if the queue is empty
             if(downloader_.imQueue_.empty()){
                 return;
             }
 
             imLink = downloader_.imQueue_.front();
-            
+            downloader_.imQueue_.pop_front();
             //release the lock
         }
+        
         stringstream ss;
         ss << imLink.i;
 
@@ -70,9 +73,9 @@ void Worker::operator()(){
 
         //DEBUG
         {
-            unique_lock<mutex> lock(downloader_.debug_mutex_);
+            unique_lock<mutex> l(downloader_.debug_mutex_);
 
-            cout << "Downloaded image " + imLink.i << endl; 
+            cout << "Downloaded image " << imLink.i << endl; 
         }
     }
 }

@@ -56,11 +56,11 @@ int main(int argc, char *argv[]){
             idIn >> global::id;
 
             //Object that handles the downloading of images from album with key "key"
-            Downloader * downloader = new Downloader(4);
+            Downloader downloader(1);
             
             //Method to actually get Images
-            downloader->storeLinks();
-            downloader->startDownload();
+            downloader.storeLinks();
+            downloader.startDownload();
 
         }else if(string(argv[i]) == "--help"){
             cout << "Usage: " << endl;
