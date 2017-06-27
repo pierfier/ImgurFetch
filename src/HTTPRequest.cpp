@@ -90,8 +90,6 @@ void HTTPRequest::getImageToFile(const string& link,
     
     request += "Host: i.imgur.com\r\n";
       
-    request += "Authorization: Client-ID " + global::key + "\r\n";
-      
     request += "Connection: keep-alive\r\n\r\n";
 
     //Send request
