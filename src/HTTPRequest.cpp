@@ -106,13 +106,6 @@ void HTTPRequest::getImageToFile(const string& link,
 
     int length = parseContentLength(header);
  
-    //DEBUG
-    cout << endl << endl;
-    cout << request << endl;
-    cout << header << endl;
-
-    //exit(1);
-
     //Read in the response
     //And then write to image file
     ofstream out(fileName.c_str(), std::ofstream::binary);

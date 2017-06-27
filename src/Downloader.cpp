@@ -33,9 +33,6 @@ void Downloader::storeLinks(){
         temp.link = link;
         temp.i = numImages;
         
-        //DEBUG
-        cout << "Store image " << numImages << endl;
-
         //Add link to the queue
         imQueue_.push_back(temp);
     }

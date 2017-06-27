@@ -56,7 +56,7 @@ int main(int argc, char *argv[]){
             idIn >> global::id;
 
             //Object that handles the downloading of images from album with key "key"
-            Downloader downloader(1);
+            Downloader downloader(4);
             
             //Method to actually get Images
             downloader.storeLinks();
