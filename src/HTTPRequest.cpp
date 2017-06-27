@@ -25,13 +25,13 @@ void HTTPRequest::requestLinks(string& response){
     string request;
     
     //Write the GET header
-    request = "GET /3/album/" + global::key + "/images.xml";
+    request = "GET /3/album/" + global::id + "/images.xml";
 
     request += " HTTP/1.1\r\n";
 
     request += "Host: api.imgur.com\r\n";
 
-    request += "Authorization: Client-ID " + global::id + "\r\n";
+    request += "Authorization: Client-ID " + global::key + "\r\n";
 
     request += "Connection: alive\r\n\r\n";
 
@@ -59,8 +59,6 @@ void HTTPRequest::requestLinks(string& response){
         BIO_read(bio_, &cur, 1);
         response += cur;
     }
-    
-    //cout << response << endl;
 }
 
 
@@ -94,7 +92,7 @@ void HTTPRequest::getImageToFile(const string& link,
     
     request += "Host: i.imgur.com\r\n";
       
-    request += "Authorization: Client-ID " + global::id + "\r\n";
+    request += "Authorization: Client-ID " + global::key + "\r\n";
       
     request += "Connection: keep-alive\r\n\r\n";
 

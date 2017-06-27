@@ -33,24 +33,30 @@ int main(int argc, char *argv[]){
             //TODO figure out how to use the object
         }else if(string(argv[i]) == "-g"){
             
-            //Get the Client ID
+            //Get the client key
             ifstream in(argv[i+1]);
 
             //Check if the file exists
             if(!in.good()){
-                cout << "No file found. There must be a key.txt in directory res/" << endl;
+                cout << "Must specify a key file" << endl;
                 exit(1);
             }
 
             in >> global::key;
             
-            //This is the application's id
+            //Get the album id
             ifstream idIn(argv[i+2]);
+
+            //Check if the file exists
+            if(!idIn.good()){
+                cerr << "Must specify an Album ID" << endl;
+                exit(1);
+            }
 
             idIn >> global::id;
 
             //Object that handles the downloading of images from album with key "key"
-            Downloader * downloader = new Downloader();
+            Downloader * downloader = new Downloader(4);
             
             //Method to actually get Images
             downloader->storeLinks();
@@ -58,7 +64,7 @@ int main(int argc, char *argv[]){
 
         }else if(string(argv[i]) == "--help"){
             cout << "Usage: " << endl;
-            cout  << "-g" << "\t" << "Grab the images from a certain imgur album" << endl;
+            cout  << "-g <key file> <id file>" << "\t" << "Grab the images from a certain imgur album" << endl;
             cout  << "-c" << "\t" <<  "[num] Compiles all of the images (already downloaded) into an epub file based on the given num" << endl;
         }
 
