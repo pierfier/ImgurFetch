@@ -8,6 +8,10 @@ include_directories(src)
 
 add_executable(imgurfetch ${SOURCES})
 
+# Find and use threads library
+find_package(Threads)
+target_link_libraries(imgurfetch ${CMAKE_THREAD_LIBS_INIT})
+
 # Find and use Openssl library
 find_package(OpenSSL REQUIRED)
 if(OPENSSL_FOUND)

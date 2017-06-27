@@ -15,6 +15,13 @@
 
 using namespace std;
 
+//Initializing values in namespace
+namespace global{
+    string host = "";
+    string key = "";
+    string id = "";
+}
+
 int main(int argc, char *argv[]){
     global::host = "api.imgur.com";
     
