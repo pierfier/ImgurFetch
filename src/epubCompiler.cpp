@@ -28,7 +28,7 @@ void epubCompiler::createMimeType(){
 //Creates the META-INF Folder and its contents
 void epubCompiler::createMETAINF(){
     cout << fileName_;
-    ofstream out(string(fileName_ + "META-INF/container.xml").c_str());
+    ofstream out(string(fileName_ + "/META-INF/container.xml").c_str());
 
     //Check file created
     if(!out.is_open()){
@@ -48,7 +48,9 @@ void epubCompiler::createMETAINF(){
 //This method adds to Content.opf up until
 //the middle of the manifest where images are being referenced
 void epubCompiler::startContentOPF(){
-    ofstream out(string(fileName_ + "").c_str()); //TODO need to finish this statement
+    //TODO make these directory: OEBPS
+
+    ofstream out(string(fileName_ + "/OEBPS/Content.opf").c_str()); //TODO need to finish this statement
 
     //Check file created
     if(!out.is_open()){
@@ -71,7 +73,9 @@ void epubCompiler::startContentOPF(){
     out << "<item id=\"ncx\" href=\"toc.ncx\" media-type=\"application/x-dtbncx+xml\" />" << endl;
     out << "<item id=\"titlepage\" href=\"title_page.xhtml\" media-type=\"application/xhtml+xml\" />" << endl;
     out << "<item id=\"book\" href=\"book.xhtml\" media-type=\"application/xhtml+xml\" />" << endl;
-    
+    out << "</metadata>" << endl;
+    out << "<manifest>" << endl;
+
     out.close();
 }
 
