@@ -45,6 +45,19 @@ void epubCompiler::createMETAINF(){
     out.close();
 }
 
+void epubCompiler::startXHTML(){
+    ofstream out();
+
+
+    out.close();
+}
+
+//Write the image tag to the manifest of Content OPF
+//and to the xhml file
+void epubCompiler::addImage(const string& fileName){
+    
+}
+
 //This method adds to Content.opf up until
 //the middle of the manifest where images are being referenced
 void epubCompiler::startContentOPF(){

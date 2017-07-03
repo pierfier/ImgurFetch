@@ -32,6 +32,8 @@ class epubCompiler{
     private:
         //Starts the creation of the files
         void init();
+        void startXHTML();
+        void endXHTML();
         void startContentOPF();
         void finishContentOPF();
 
