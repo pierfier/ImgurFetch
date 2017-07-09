@@ -45,22 +45,44 @@ void epubCompiler::createMETAINF(){
     out.close();
 }
 
-void epubCompiler::startXHTML(){
-    ofstream out();
+void epubCompiler::createXHTML(){
+    ofstream out(string(fileName_ + "/OEPBS/main.html").c_str());
+    
+    out << "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"" << endl;
+    out << "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">" << endl;
+    out << "<html xmlns=\"http://www.w3.org/1999/xhtml\">" << endl;
+    out << "<head>" << endl;
+    out << "<title>Title of document</title>" << endl;
+    out << "</head>" << endl;
+    out << "<body>" << endl;
+    
+    out.close();
+}
 
-
+void epubCompiler::finishXHTML(){
+    ofstream out(string(fileName_ + "/OEPBS/main.html").c_str(), ofstream::app);
+    
+    out << "</body>" << endl;
+    out << "</html>" << endl;
+    
     out.close();
 }
 
 //Write the image tag to the manifest of Content OPF
 //and to the xhml file
 void epubCompiler::addImage(const string& fileName){
-    
+    ofstream out(string(fileName_ + "/OEPBS/main.html").c_str(), ofstream::app);
+
+    out << "<img src=\""
+    out << fileName;
+    out << "\" />" << endl;
+
+    out.close();
 }
 
 //This method adds to Content.opf up until
 //the middle of the manifest where images are being referenced
-void epubCompiler::startContentOPF(){
+void epubCompiler::createContentOPF(){
     //TODO make these directory: OEBPS
 
     ofstream out(string(fileName_ + "/OEBPS/Content.opf").c_str()); //TODO need to finish this statement

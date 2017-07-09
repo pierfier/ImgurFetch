@@ -25,16 +25,16 @@ class epubCompiler{
         void createMimeType();
         void createMETAINF();
         void createOEBPS();
-        
+        void createTOC();       
         void compileEPUB();
 
         ~epubCompiler();
     private:
         //Starts the creation of the files
         void init();
-        void startXHTML();
-        void endXHTML();
-        void startContentOPF();
+        void createXHTML();
+        void finishXHTML();
+        void createContentOPF();
         void finishContentOPF();
 
         //Attributes to the ebook
