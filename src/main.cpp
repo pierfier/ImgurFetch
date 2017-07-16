@@ -37,12 +37,23 @@ int main(int argc, char *argv[]){
 
             //Check if more command line arguments were given
             if(argc < i + 4){
+                cout << "Enter number of images in book: ";
+                cin >> numImages;
                 
+                cout << "Enter the book folder: ";
+                cin >> bookDest;
+                
+                cout << "Enter the title of the book: ";
+                cin >> title;
+                
+                cout << "Enter the author of the book: ";
+                cin >> author;
+
             }else{
                 numImages = atoi(argv[i+1]);
                 bookDest = string(argv[i+2]);
                 title = string(argv[i+3]);
-                author = string(argv[i+4]);
+                author = string(argv[i+4]);               
             }
             
             epubCompiler eCompiler(bookDest, title, author);
@@ -54,7 +65,7 @@ int main(int argc, char *argv[]){
 
                 file = bookDest + "/OEBPS/images/" + "image" + ss.str() + ".jpg";
 
-                eCompiler.addImage(file);
+                //eCompiler.addImage(file);
             }
 
         }else if(string(argv[i]) == "-g"){

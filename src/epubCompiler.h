@@ -20,11 +20,8 @@ class epubCompiler{
         ~epubCompiler();
     private:
         //Starts the creation of the files
-        void init();
         void createMimeType();
         void createMETAINF();
-        void createOEBPS();
-        void createTOC();
         void createXHTML();
         void finishXHTML();
         void createContentOPF();
