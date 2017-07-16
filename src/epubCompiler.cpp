@@ -5,15 +5,15 @@
 
 using namespace std;
 
-epubCompiler::epubCompiler(const string& fileName, const string & title,
+epubCompiler::epubCompiler(const string& bookFolder, const string & title,
             const string& author) :
-                fileName_(fileName), title_(title), author_(author){
+                bookFolder_(bookFolder), title_(title), author_(author){
 }
 
 //Creates mimetype file with a single line
 //If it does not exist already
 void epubCompiler::createMimeType(){
-    ofstream out(string(fileName_ + "mimetype").c_str());
+    ofstream out(string(bookFolder + "/mimetype").c_str());
     
     //Check to make sure that the file is created
     if(!out.is_open()){
@@ -27,8 +27,8 @@ void epubCompiler::createMimeType(){
 
 //Creates the META-INF Folder and its contents
 void epubCompiler::createMETAINF(){
-    cout << fileName_;
-    ofstream out(string(fileName_ + "/META-INF/container.xml").c_str());
+    cout << bookFolder;
+    ofstream out(string(bookFolder + "/META-INF/container.xml").c_str());
 
     //Check file created
     if(!out.is_open()){
@@ -46,7 +46,7 @@ void epubCompiler::createMETAINF(){
 }
 
 void epubCompiler::createXHTML(){
-    ofstream out(string(fileName_ + "/OEPBS/main.html").c_str());
+    ofstream out(string(bookFolder + "/OEPBS/main.html").c_str());
     
     out << "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"" << endl;
     out << "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">" << endl;
@@ -60,7 +60,7 @@ void epubCompiler::createXHTML(){
 }
 
 void epubCompiler::finishXHTML(){
-    ofstream out(string(fileName_ + "/OEPBS/main.html").c_str(), ofstream::app);
+    ofstream out(string(bookFolder + "/OEPBS/main.html").c_str(), ofstream::app);
     
     out << "</body>" << endl;
     out << "</html>" << endl;
@@ -71,7 +71,7 @@ void epubCompiler::finishXHTML(){
 //Write the image tag to the manifest of Content OPF
 //and to the xhml file
 void epubCompiler::addImage(const string& fileName){
-    ofstream out(string(fileName_ + "/OEPBS/main.html").c_str(), ofstream::app);
+    ofstream out(string(bookFolder + "/OEPBS/main.html").c_str(), ofstream::app);
 
     out << "<img src=\""
     out << fileName;
@@ -85,7 +85,7 @@ void epubCompiler::addImage(const string& fileName){
 void epubCompiler::createContentOPF(){
     //TODO make these directory: OEBPS
 
-    ofstream out(string(fileName_ + "/OEBPS/Content.opf").c_str()); //TODO need to finish this statement
+    ofstream out(string(bookFolder + "/OEBPS/Content.opf").c_str()); 
 
     //Check file created
     if(!out.is_open()){
@@ -115,7 +115,7 @@ void epubCompiler::createContentOPF(){
 }
 
 void epubCompiler::finishContentOPF(){
-     ofstream out(string(fileName_ + "").c_str(), ofstream::app); //TODO need to finish this statement
+     ofstream out(string(bookFolder + "/OEBPS/Content.opf").c_str(), ofstream::app); 
 
     //Check file created
     if(!out.is_open()){

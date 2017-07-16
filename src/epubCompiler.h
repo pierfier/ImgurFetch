@@ -10,35 +10,28 @@ class epubCompiler{
     //numbers
     
     public:     
-        epubCompiler(const string& fileName, const string& title, const string& author);
+        epubCompiler(const string& bookFolder, const string& title, const string& author);
         
-        //Writes in all of the necessary
-        void addMetaData();
-
         //This method only writes in the necessary data for the image
         //to read in the xhtml. It appends the tag to the end of the 
         //file
         void addImage(const string& fileName);
         
-        //Depending on what is written in all of these,
-        //they could all be under one method
-        void createMimeType();
-        void createMETAINF();
-        void createOEBPS();
-        void createTOC();       
-        void compileEPUB();
-
         ~epubCompiler();
     private:
         //Starts the creation of the files
         void init();
+        void createMimeType();
+        void createMETAINF();
+        void createOEBPS();
+        void createTOC();
         void createXHTML();
         void finishXHTML();
         void createContentOPF();
         void finishContentOPF();
 
         //Attributes to the ebook
-        string fileName_;
+        string bookFolder_;
         string title_;
         string author_;
 };

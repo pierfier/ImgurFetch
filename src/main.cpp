@@ -12,6 +12,7 @@
 #include <string>
 #include "Downloader.h"
 #include "main.h"
+#include "epubCompiler.h"
 
 using namespace std;
 
@@ -28,9 +29,34 @@ int main(int argc, char *argv[]){
     //Check for certain arguments
     for(int i = 0; i < argc; ++i){
         if(string(argv[i]) == "-c"){
+            int numImages;
+            string bookDest;
+            string imageSrc;
+            string title;
+            string author;
+
+            //Check if more command line arguments were given
+            if(argc < i + 4){
+                
+            }else{
+                numImages = atoi(argv[i+1]);
+                bookDest = string(argv[i+2]);
+                title = string(argv[i+3]);
+                author = string(argv[i+4]);
+            }
             
-            //The argument for compiling is the number of images to
-            //TODO figure out how to use the object
+            epubCompiler eCompiler(bookDest, title, author);
+            string file;
+
+            for(int i = 0; i < numImages; ++i){
+                stringstream ss;
+                ss << (i + 1);
+
+                file = bookDest + "/OEBPS/images/" + "image" + ss.str() + ".jpg";
+
+                eCompiler.addImage(file);
+            }
+
         }else if(string(argv[i]) == "-g"){
             
             //Get the client key
@@ -65,7 +91,8 @@ int main(int argc, char *argv[]){
         }else if(string(argv[i]) == "--help"){
             cout << "Usage: " << endl;
             cout  << "-g <key file> <id file>" << "\t" << "Grab the images from a certain imgur album" << endl;
-            cout  << "-c" << "\t" <<  "[num] Compiles all of the images (already downloaded) into an epub file based on the given num" << endl;
+            cout  << "-c" << "\t" <<  "[num] <book destination> <title> <author>"; 
+            cout << "Compiles all of the images (already downloaded) into an epub file based on the given num" << endl;
         }
 
     }
