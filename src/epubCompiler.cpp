@@ -13,6 +13,7 @@ epubCompiler::epubCompiler(const string& bookFolder_, const string & title,
     createMETAINF();
     createXHTML();
     createContentOPF();
+    createTOC();    
 }
 
 //Creates mimetype file with a single line
@@ -121,15 +122,45 @@ void epubCompiler::createContentOPF(){
     out << "<dc:identifier id=\"BookID\" opf:scheme=\"UUID\">qwertystorm1234567890</dc:identifier>" << endl;
     out << "</metadata>" << endl;
     out << "<manifest>" << endl;
-    //TODO hopefully do not need this
-    //out << "<item id=\"ncx\" href=\"toc.ncx\" media-type=\"application/x-dtbncx+xml\" />" << endl;
+    out << "<item id=\"ncx\" href=\"toc.ncx\" media-type=\"application/x-dtbncx+xml\" />" << endl;
     out << "<item id=\"titlepage\" href=\"title_page.xhtml\" media-type=\"application/xhtml+xml\" />" << endl;
     out << "<item id=\"book\" href=\"book.xhtml\" media-type=\"application/xhtml+xml\" />" << endl;
-    //out << "<item id=\"ncx\" href=\"toc.ncx\" media-type=\"application/x-dtbncx+xml\" />" << endl;
+    out << "<item id=\"ncx\" href=\"toc.ncx\" media-type=\"application/x-dtbncx+xml\" />" << endl;
     out << "<item id=\"Book\" href=\"OEBPS/main.html\" media-type=\"application/xhtml+xml\" />" << endl;
     out.close();
 }
 
+//Creates the table of contents file
+//TODO working here
+void epubCompiler::createTOC(){
+    ofstream out(string(bookFolder_ + "/OEBPS/toc.ncx").c_str());
+    out << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << endl;
+    out << "<ncx xmlns=\"http://www.daisy.org/z3986/2005/ncx/\" version=\"2005-1\">" << endl;
+    out << "<head>" << endl;
+    out << "<meta name=\"dtb:uid\" content=\"qwertystorm1234567890\"/>" << endl;
+    <meta name="dtb:depth" content="1"/>
+    <meta name="dtb:totalPageCount" content="0"/>
+    <meta name="dtb:maxPageNumber" content="0"/>
+</head>
+<docTitle>
+    <text>Sample .epub eBook</text>
+</docTitle>
+
+<navMap>
+<navPoint id="chapter01" playOrder="2">
+    <navLabel>
+        <text>Chapter 1</text>
+    </navLabel>
+    <content src="chap01.xhtml"/>
+</navPoint>
+
+
+</navMap>
+</ncx>
+    out.close();
+}
+
+//Finish the content.opf file
 void epubCompiler::finishContentOPF(){
      ofstream out(string(bookFolder_ + "/OEBPS/content.opf").c_str(), ofstream::app); 
 
@@ -140,6 +171,9 @@ void epubCompiler::finishContentOPF(){
     }
     
     out << "</manifest>" << endl;
+    out << "<spine toc=\"ncx\">" << endl;
+    out << "    <itemref idref=\"book\" />" << endl;
+    out << "</spine>" << endl;
     out << "</package>" << endl;
     out.close();
 }
