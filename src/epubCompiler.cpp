@@ -39,13 +39,14 @@ void epubCompiler::createMETAINF(){
         cerr << "conatiner.xml not created" << endl;
         exit(1);
     }
-
-    out << "<?xml version=\"1.0\"?>" << endl;
+    
+    out << "<?xml version="1.0"?>" << endl;
     out << "<container version=\"1.0\" xmlns=\"urn:oasis:names:tc:opendocument:xmlns:container\">" << endl;
-    out << "<rootfiles>" << endl;
-    out << "<rootfile full-path=\"OEBPS/content.opf\" media-type=\"application/oebps-package+xml\"/>" << endl;
-    out << "</rootfiles>" << endl;
+    out << "    <rootfiles>" << endl;
+    out << "        <rootfile full-path=\"OEBPS/content.opf\" media-type=\"application/oebps-packa" << endl;
+    out << "    </rootfiles>" << endl;
     out << "</container>" << endl;
+
     out.close();
 }
 
@@ -79,7 +80,7 @@ void epubCompiler::finishXHTML(){
 //Write the image tag to the manifest of Content OPF
 //and to the xhml file
 void epubCompiler::addImage(const string& fileName){
-    ofstream outM(string(bookFolder_ + "/OEBPS/Content.opf").c_str(), ofstream::app);
+    ofstream outM(string(bookFolder_ + "/OEBPS/content.opf").c_str(), ofstream::app);
     ofstream out(string(bookFolder_ + "/OEBPS/main.html").c_str(), ofstream::app);
     
     //Add image to the xhtml file
@@ -99,7 +100,7 @@ void epubCompiler::addImage(const string& fileName){
 //the middle of the manifest where images are being referenced
 void epubCompiler::createContentOPF(){
 
-    ofstream out(string(bookFolder_ + "/OEBPS/Content.opf").c_str(), ofstream::out); 
+    ofstream out(string(bookFolder_ + "/OEBPS/content.opf").c_str(), ofstream::out); 
 
     //Check file created
     if(!out.is_open()){
@@ -131,7 +132,7 @@ void epubCompiler::createContentOPF(){
 }
 
 void epubCompiler::finishContentOPF(){
-     ofstream out(string(bookFolder_ + "/OEBPS/Content.opf").c_str(), ofstream::app); 
+     ofstream out(string(bookFolder_ + "/OEBPS/content.opf").c_str(), ofstream::app); 
 
     //Check file created
     if(!out.is_open()){
