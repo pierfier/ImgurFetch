@@ -63,7 +63,7 @@ int main(int argc, char *argv[]){
                 stringstream ss;
                 ss << (i + 1);
 
-                file = bookDest + "/OEBPS/images/" + "image" + ss.str() + ".jpg";
+                file = "OEBPS/images/" + "image" + ss.str() + ".jpg";
 
                 eCompiler.addImage(file);
             }

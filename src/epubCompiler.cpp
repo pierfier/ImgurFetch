@@ -40,10 +40,10 @@ void epubCompiler::createMETAINF(){
         exit(1);
     }
     
-    out << "<?xml version="1.0"?>" << endl;
+    out << "<?xml version=\"1.0\" ?>" << endl;
     out << "<container version=\"1.0\" xmlns=\"urn:oasis:names:tc:opendocument:xmlns:container\">" << endl;
     out << "    <rootfiles>" << endl;
-    out << "        <rootfile full-path=\"OEBPS/content.opf\" media-type=\"application/oebps-packa" << endl;
+    out << "        <rootfile full-path=\"OEBPS/content.opf\" media-type=\"application/oebps-package+xml\"/>" << endl;
     out << "    </rootfiles>" << endl;
     out << "</container>" << endl;
 
