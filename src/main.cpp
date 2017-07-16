@@ -65,7 +65,7 @@ int main(int argc, char *argv[]){
 
                 file = bookDest + "/OEBPS/images/" + "image" + ss.str() + ".jpg";
 
-                //eCompiler.addImage(file);
+                eCompiler.addImage(file);
             }
 
         }else if(string(argv[i]) == "-g"){
