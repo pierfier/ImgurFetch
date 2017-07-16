@@ -108,7 +108,7 @@ void epubCompiler::createContentOPF(){
     }
 
     //Write all of the data
-    out << "<?xml version=\"1.0\" encoding=\"UTF-8\"??>" << endl;
+    out << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << endl;
     out << "<package xmlns=\"http://www.idpf.org/2007/opf\" unique-identifier=\"BookID\" version=\"2.0\" >" << endl;
     out << "<metadata xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:opf=\"http://www.idpf.org/2007/opf\">" << endl;
     out << "<dc:title>" << title_ << "</dc:title>" << endl;
