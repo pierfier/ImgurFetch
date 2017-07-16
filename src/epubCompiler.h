@@ -14,8 +14,9 @@ class epubCompiler{
         
         //This method only writes in the necessary data for the image
         //to read in the xhtml. It appends the tag to the end of the 
-        //file
-        void addImage(const string& fileName);
+        //file.
+        //Must also specify which image it is
+        void addImage(const string& fileName, int num);
         
         ~epubCompiler();
     private:

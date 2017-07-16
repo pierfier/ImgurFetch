@@ -79,7 +79,7 @@ void epubCompiler::finishXHTML(){
 
 //Write the image tag to the manifest of Content OPF
 //and to the xhml file
-void epubCompiler::addImage(const string& fileName){
+void epubCompiler::addImage(const string& fileName, int i){
     ofstream outM(string(bookFolder_ + "/OEBPS/content.opf").c_str(), ofstream::app);
     ofstream out(string(bookFolder_ + "/OEBPS/main.html").c_str(), ofstream::app);
     
@@ -89,7 +89,8 @@ void epubCompiler::addImage(const string& fileName){
     out << "\" />" << endl;
 
     //Add image to the manifest
-    outM << "<item id=\"imgl\" href=\"" << fileName;
+    outM << "<item id=\"img" << i;
+    outM << "\" href=\"" << fileName;
     outM << "\" media-type=\"image/png\" />" << endl;
     
     outM.close();
@@ -124,10 +125,8 @@ void epubCompiler::createContentOPF(){
     //out << "<item id=\"ncx\" href=\"toc.ncx\" media-type=\"application/x-dtbncx+xml\" />" << endl;
     out << "<item id=\"titlepage\" href=\"title_page.xhtml\" media-type=\"application/xhtml+xml\" />" << endl;
     out << "<item id=\"book\" href=\"book.xhtml\" media-type=\"application/xhtml+xml\" />" << endl;
-    out << "</metadata>" << endl;
-    out << "<manifest>" << endl;
     //out << "<item id=\"ncx\" href=\"toc.ncx\" media-type=\"application/x-dtbncx+xml\" />" << endl;
-    out << "<item id=\"Book\" href=\"main.html\" media-type=\"application/xhtml+xml\" />" << endl;
+    out << "<item id=\"Book\" href=\"OEBPS/main.html\" media-type=\"application/xhtml+xml\" />" << endl;
     out.close();
 }
 
@@ -141,9 +140,6 @@ void epubCompiler::finishContentOPF(){
     }
     
     out << "</manifest>" << endl;
-    out << "<spine toc=\"ncx\">" << endl;
-    out << "<itemref idref=\"Book\" />" << endl;
-    out << "</spine>" << endl;
     out << "</package>" << endl;
     out.close();
 }

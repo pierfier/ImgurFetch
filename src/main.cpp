@@ -63,9 +63,9 @@ int main(int argc, char *argv[]){
                 stringstream ss;
                 ss << (i + 1);
 
-                file = "OEBPS/images/" + "image" + ss.str() + ".jpg";
+                file = "images/image" + ss.str() + ".jpg";
 
-                eCompiler.addImage(file);
+                eCompiler.addImage(file, i);
             }
 
         }else if(string(argv[i]) == "-g"){
