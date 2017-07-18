@@ -131,32 +131,28 @@ void epubCompiler::createContentOPF(){
 }
 
 //Creates the table of contents file
-//TODO working here
 void epubCompiler::createTOC(){
     ofstream out(string(bookFolder_ + "/OEBPS/toc.ncx").c_str());
     out << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << endl;
     out << "<ncx xmlns=\"http://www.daisy.org/z3986/2005/ncx/\" version=\"2005-1\">" << endl;
     out << "<head>" << endl;
     out << "<meta name=\"dtb:uid\" content=\"qwertystorm1234567890\"/>" << endl;
-    <meta name="dtb:depth" content="1"/>
-    <meta name="dtb:totalPageCount" content="0"/>
-    <meta name="dtb:maxPageNumber" content="0"/>
-</head>
-<docTitle>
-    <text>Sample .epub eBook</text>
-</docTitle>
-
-<navMap>
-<navPoint id="chapter01" playOrder="2">
-    <navLabel>
-        <text>Chapter 1</text>
-    </navLabel>
-    <content src="chap01.xhtml"/>
-</navPoint>
-
-
-</navMap>
-</ncx>
+    out << "<meta name=\"dtb:depth\" content=\"1\"/>" << endl;
+    out << "<meta name=\"dtb:totalPageCount\" content=\"0\"/>" << endl;
+    out << "<meta name=\"dtb:maxPageNumber\" content=\"0\"/>" << endl;
+    out << "</head>" << endl;
+    out << "<docTitle>" << endl;
+    out << "<text>eBook</text>" << endl;
+    out << "</docTitle>" << endl;
+    out << "<navMap>" << endl;
+    out << "<navPoint id=\"chapter01\" playOrder=\"2\">" << endl;
+    out << "<navLabel>" << endl;
+    out << "<text>Chapter 1</text>" << endl;
+    out << "</navLabel>" << endl;
+    out << "<content src=\"main.html\"/>" << endl;
+    out << "</navPoint>" << endl;
+    out << "</navMap>" << endl;
+    out << "</ncx>" << endl;
     out.close();
 }
 
