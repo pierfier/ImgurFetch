@@ -6,6 +6,9 @@ project(imgurfetch)
 file(GLOB SOURCES "src/*.cpp")
 include_directories(src)
 
+# Fix the compiling error
+add_definitions("-fPIC")
+
 add_executable(imgurfetch ${SOURCES})
 
 # Find and use threads library

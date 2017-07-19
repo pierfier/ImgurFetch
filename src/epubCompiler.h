@@ -25,6 +25,7 @@ class epubCompiler{
         void createMETAINF();
         void createXHTML();
         void finishXHTML();
+        void createTOC();
         void createContentOPF();
         void finishContentOPF();
 

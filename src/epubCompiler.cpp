@@ -55,17 +55,14 @@ void epubCompiler::createMETAINF(){
 void epubCompiler::createXHTML(){
     ofstream out(string(bookFolder_ + "/OEBPS/main.html").c_str(), ofstream::out);
     
-    out << "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"" << endl;
-    out << "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">" << endl;
+    out << "<?xml version=\"1.0\" encoding=\"utf-8\"?>" << endl;
+    out << "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\"" << endl;
+    out << "\"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">" << endl;
     out << "<html xmlns=\"http://www.w3.org/1999/xhtml\">" << endl;
     out << "<head>" << endl;
-    out << "<title>Title of document</title>" << endl;
+    out << "<title>Book</title>" << endl;
     out << "</head>" << endl;
     out << "<body>" << endl;
-    
-    //DEBUG
-    cout << "Started XHTML";
-
     out.close();
 }
 
@@ -92,7 +89,7 @@ void epubCompiler::addImage(const string& fileName, int i){
     //Add image to the manifest
     outM << "<item id=\"img" << i;
     outM << "\" href=\"" << fileName;
-    outM << "\" media-type=\"image/png\" />" << endl;
+    outM << "\" media-type=\"image/jpeg\" />" << endl;
     
     outM.close();
     out.close();
@@ -123,10 +120,7 @@ void epubCompiler::createContentOPF(){
     out << "</metadata>" << endl;
     out << "<manifest>" << endl;
     out << "<item id=\"ncx\" href=\"toc.ncx\" media-type=\"application/x-dtbncx+xml\" />" << endl;
-    out << "<item id=\"titlepage\" href=\"title_page.xhtml\" media-type=\"application/xhtml+xml\" />" << endl;
-    out << "<item id=\"book\" href=\"book.xhtml\" media-type=\"application/xhtml+xml\" />" << endl;
-    out << "<item id=\"ncx\" href=\"toc.ncx\" media-type=\"application/x-dtbncx+xml\" />" << endl;
-    out << "<item id=\"Book\" href=\"OEBPS/main.html\" media-type=\"application/xhtml+xml\" />" << endl;
+    out << "<item id=\"book\" href=\"main.html\" media-type=\"application/xhtml+xml\" />" << endl;
     out.close();
 }
 
@@ -145,7 +139,7 @@ void epubCompiler::createTOC(){
     out << "<text>eBook</text>" << endl;
     out << "</docTitle>" << endl;
     out << "<navMap>" << endl;
-    out << "<navPoint id=\"chapter01\" playOrder=\"2\">" << endl;
+    out << "<navPoint id=\"chapter01\" playOrder=\"1\">" << endl;
     out << "<navLabel>" << endl;
     out << "<text>Chapter 1</text>" << endl;
     out << "</navLabel>" << endl;
