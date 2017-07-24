@@ -63,12 +63,14 @@ void epubCompiler::createXHTML(){
     out << "<title>Book</title>" << endl;
     out << "</head>" << endl;
     out << "<body>" << endl;
+    out << "<div>" << endl;
     out.close();
 }
 
 void epubCompiler::finishXHTML(){
     ofstream out(string(bookFolder_ + "/OEBPS/main.html").c_str(), ofstream::app);
     
+    out << "</div>" << endl;
     out << "</body>" << endl;
     out << "</html>" << endl;
     
@@ -84,7 +86,7 @@ void epubCompiler::addImage(const string& fileName, int i){
     //Add image to the xhtml file
     out << "<img src=\"";
     out << fileName;
-    out << "\" />" << endl;
+    out << "\" alt=\"--\"/>" << endl;
 
     //Add image to the manifest
     outM << "<item id=\"img" << i;
