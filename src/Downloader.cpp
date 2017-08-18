@@ -7,7 +7,8 @@
 
 using namespace std;
 
-void Downloader::storeLinks(){
+//Store the links of each image and the number that keeps the images in order
+void Downloader::storeLinks(int startID){
     string response, link;
 
     request_.requestLinks(response);
@@ -15,12 +16,11 @@ void Downloader::storeLinks(){
     //Parse the links to the queue
     
     int index = 0;
-    int numImages = 0;
+    int numImages = startID;
     
     ImageLink temp;
 
     while((index = response.find("<link>", index)) != string::npos){
-        ++numImages;
         index += 6;
 
         link = "";
@@ -35,6 +35,8 @@ void Downloader::storeLinks(){
         
         //Add link to the queue
         imQueue_.push_back(temp);
+        
+        ++numImages;
     }
 }
 
@@ -65,7 +67,8 @@ void Worker::operator()(){
         
         stringstream ss;
         ss << imLink.i;
-
+        
+        //** Important ** All of the images are downloaded to the res/ directory
         request.getImageToFile(imLink.link, ("res/image" + ss.str()  + ".jpg").c_str());
 
         //DEBUG

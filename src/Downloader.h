@@ -35,7 +35,7 @@ class Downloader{
 
         //Request file with all of the image links,
         //parse links, and add them to the queue
-        void storeLinks();
+        void storeLinks(int startID);
 
         //Create all of the threads and start downloading
         void startDownload();

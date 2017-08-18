@@ -28,7 +28,61 @@ int main(int argc, char *argv[]){
     
     //Check for certain arguments
     for(int i = 0; i < argc; ++i){
-        if(string(argv[i]) == "-c"){
+        if(string(argv[i]) == "-g"){
+            
+            //Get the client key
+            ifstream in(argv[i+1]);
+
+            //Check if the file exists
+            if(!in.good()){
+                string keyFile;
+                cout << "Enter key file name: ";
+                cin >> keyFile;
+                in = ifstream(keyFile.c_str());
+            }
+
+            in >> global::key;
+            
+            //Get the album id
+            ifstream idIn(argv[i+2]);
+
+            //Check if the file exists
+            if(!idIn.good()){
+                string idFile;
+                cout << "Enter album id: ";
+                cin >> idFile;
+                idIn = ifstream(idFile.c_str());
+            }
+            
+            idIn >> global::id;
+
+            //Get the starting number for the image names. 
+            //If number not given start at 1 by default
+            //Used if the same book is stored across different albums   
+            int startImage = 1;
+            
+            //DEBUG
+            cout << "argc (number of arguments): " << argc << endl;
+            cout << "index for the starting image: " << i + 3 << endl;
+
+            if(argc > i + 3){
+
+                //Check if the next argument is a number
+                if(isdigit(argv[i + 3][0])){
+                    startImage = atoi(argv[i + 3]);
+                }
+            }
+
+            //Object that handles the downloading of images from album with key "key"
+            Downloader downloader(4);
+            
+            //Method to actually get Images
+            downloader.storeLinks(startImage);
+            downloader.startDownload();
+
+        }
+
+        else if(string(argv[i]) == "-c"){
             int numImages;
             string bookDest;
             string imageSrc;
@@ -56,6 +110,7 @@ int main(int argc, char *argv[]){
                 author = string(argv[i+4]);               
             }
             
+            //Initialize compiler object
             epubCompiler eCompiler(bookDest, title, author);
             string file;
 
@@ -68,42 +123,11 @@ int main(int argc, char *argv[]){
                 eCompiler.addImage(file, i);
             }
 
-        }else if(string(argv[i]) == "-g"){
-            
-            //Get the client key
-            ifstream in(argv[i+1]);
-
-            //Check if the file exists
-            if(!in.good()){
-                cout << "Must specify a key file" << endl;
-                exit(1);
-            }
-
-            in >> global::key;
-            
-            //Get the album id
-            ifstream idIn(argv[i+2]);
-
-            //Check if the file exists
-            if(!idIn.good()){
-                cerr << "Must specify an Album ID" << endl;
-                exit(1);
-            }
-
-            idIn >> global::id;
-
-            //Object that handles the downloading of images from album with key "key"
-            Downloader downloader(4);
-            
-            //Method to actually get Images
-            downloader.storeLinks();
-            downloader.startDownload();
-
         }else if(string(argv[i]) == "--help"){
             cout << "Usage: " << endl;
-            cout  << "-g <key file> <id file>" << "\t" << "Grab the images from a certain imgur album" << endl;
-            cout  << "-c" << "\t" <<  "[num] <book destination> <title> <author>"; 
-            cout << "Compiles all of the images (already downloaded) into an epub file based on the given num" << endl;
+            cout  << "\n\t-g <key file> <id file>" << "\t" << "Grab the images from a certain imgur album" << endl << endl;
+            cout  << "\t-c" << "\t" <<  "[num] <book destination> <title> <author>"; 
+            cout << " Compiles all of the images (already downloaded) into an epub file based on the given number" << endl;
         }
 
     }
