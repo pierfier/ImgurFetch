@@ -82,17 +82,24 @@ int main(int argc, char *argv[]){
 
         }
 
+        // "-c" flag parses the list of images, the book folder, the title of the book, and the author
+        
         else if(string(argv[i]) == "-c"){
-            int numImages;
+            vector<string> images;
             string bookDest;
             string imageSrc;
             string title;
             string author;
-
+            
             //Check if more command line arguments were given
             if(argc < i + 4){
-                cout << "Enter number of images in book: ";
-                cin >> numImages;
+                string im = string("c");
+                
+                //Keep reading in the images
+                while(im != ""){
+                    cout << "Enter image file" << endl;
+                    
+                }
                 
                 cout << "Enter the book folder: ";
                 cin >> bookDest;
@@ -104,10 +111,8 @@ int main(int argc, char *argv[]){
                 cin >> author;
 
             }else{
-                numImages = atoi(argv[i+1]);
-                bookDest = string(argv[i+2]);
-                title = string(argv[i+3]);
-                author = string(argv[i+4]);               
+                
+                //Parse the commandline arguments into the variables
             }
             
             //Initialize compiler object
@@ -118,7 +123,7 @@ int main(int argc, char *argv[]){
                 stringstream ss;
                 ss << (i + 1);
 
-                file = "images/image" + ss.str() + ".jpg";
+                file = "images/image" + ss.str();
 
                 eCompiler.addImage(file, i);
             }

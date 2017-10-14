@@ -79,7 +79,8 @@ void epubCompiler::finishXHTML(){
 
 //Write the image tag to the manifest of Content OPF
 //and to the xhml file
-void epubCompiler::addImage(const string& fileName, int i){
+//Use the fileName given to place into 
+void epubCompiler::addImage(const string& fileName){
     ofstream outM(string(bookFolder_ + "/OEBPS/content.opf").c_str(), ofstream::app);
     ofstream out(string(bookFolder_ + "/OEBPS/main.html").c_str(), ofstream::app);
     
@@ -89,7 +90,7 @@ void epubCompiler::addImage(const string& fileName, int i){
     out << "\" alt=\"--\"/>" << endl;
 
     //Add image to the manifest
-    outM << "<item id=\"img" << i;
+    outM << "<item id=\"img" << ; //use the name of the file name minus the extension
     outM << "\" href=\"" << fileName;
     outM << "\" media-type=\"image/jpeg\" />" << endl;
     
