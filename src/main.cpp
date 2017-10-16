@@ -82,7 +82,7 @@ int main(int argc, char *argv[]){
 
         }
 
-        // "-c" flag parses the list of images, the book folder, the title of the book, and the author
+        // "-c" flag parses the list of images(relative path from main ), the book folder, the title of the book, and the author
         
         else if(string(argv[i]) == "-c"){
             vector<string> images;
@@ -93,13 +93,6 @@ int main(int argc, char *argv[]){
             
             //Check if more command line arguments were given
             if(argc < i + 4){
-                string im = string("c");
-                
-                //Keep reading in the images
-                while(im != ""){
-                    cout << "Enter image file" << endl;
-                    
-                }
                 
                 cout << "Enter the book folder: ";
                 cin >> bookDest;
@@ -109,29 +102,43 @@ int main(int argc, char *argv[]){
                 
                 cout << "Enter the author of the book: ";
                 cin >> author;
+                
+                string im = string("c");
+                
+                //Keep reading in the images
+                for(;im != "";){
+                    cout << "Enter image file" << endl;
+                    cin >> im;
+
+                    if(im != string("")){
+                        images.push_back(im);
+                    }
+                }
 
             }else{
                 
                 //Parse the commandline arguments into the variables
+                bookDest = string(argv[i + 1]);
+                title = string(argv[i + 2]);
+                author = string(argv[i + 3]);
+                
+                //Grab image file names until there are no more
+                for(int j = i + 4; j < argv; ++j){
+                    images.push_back(string(argv[j]));
+                }
             }
             
             //Initialize compiler object
             epubCompiler eCompiler(bookDest, title, author);
-            string file;
-
-            for(int i = 0; i < numImages; ++i){
-                stringstream ss;
-                ss << (i + 1);
-
-                file = "images/image" + ss.str();
-
-                eCompiler.addImage(file, i);
+            
+            for(int i = 0; i < images.size(); ++i){
+                eCompiler.addImage(images[i]);
             }
 
         }else if(string(argv[i]) == "--help"){
             cout << "Usage: " << endl;
             cout  << "\n\t-g <key file> <id file>" << "\t" << "Grab the images from a certain imgur album" << endl << endl;
-            cout  << "\t-c" << "\t" <<  "[num] <book destination> <title> <author>"; 
+            cout  << "\t-c" << "\t" <<  "[num] <book destination> <title> <author>"; //TODO will need to change this
             cout << " Compiles all of the images (already downloaded) into an epub file based on the given number" << endl;
         }
 
