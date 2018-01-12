@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1> Imgur Album to epub downloader </h1>
+
+<!-- Form to take in all of the necessary data for the user -->
+<form action="{{url_for('handle_data') }}" method="post">
+
+    Album ID: <br>
+    <input type="text" name="album_id"> <br>
+
+    Title: <br>
+    <input type="text" name="title" > <br>
+
+    Author: <br>
+    <input type="text" name="author" > <br>
+
+    First image is cover page:
+    <input type="checkbox" name="use_first_image"><br>
+    
+    <input type="submit" value="Get Album">
+</form>
+
+</body>
+</html>
