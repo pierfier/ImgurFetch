@@ -2,3 +2,26 @@ Program Design:
 1. The thread pool model will be used to download multiple images at the same time
     - A thread will contain a single ssh_handler object which will keep a continuous connection
       with the host, but will grab different images as they become available
+
+
+
+class:      Downloader
+             ||     |
+             ||     +>  Holds worker threads that each have a connection
+             ||         to the imgur website to grav an image
+             ||   
+             ||
+             ||
+             ||
+             ==> SSL_Handler
+                  ||      |
+                  ||      +>    Holds the socket and file descriptors for 
+                  ||            the connection to the imgur website
+                  ||
+                  ||
+                  ||
+                  ==>   HTTPRequest
+                                |
+                                +>      Holds all of the http information for reading pages
+                                        and constructing header requests
+
