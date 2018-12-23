@@ -47,8 +47,9 @@ void Downloader::startDownload(){
 }
 
 void Worker::operator()(){
-    HTTPRequest request; 
     
+    HTTPRequest request; 
+
     while(true){
         ImageLink imLink;
         {
