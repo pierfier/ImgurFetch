@@ -57,6 +57,9 @@ class Downloader{
         //DEBUGging purposes, mainly to print to the console
         mutex debug_mutex_;
         
+        //Store the directory for the images to be stored
+        string download_dir_;
+
         //TODO hopefully will not need this to work
         //condition_variable queue_ready_;
 

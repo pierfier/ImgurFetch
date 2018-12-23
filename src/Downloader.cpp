@@ -47,8 +47,7 @@ void Downloader::startDownload(){
 }
 
 void Worker::operator()(){
-    
-    HTTPRequest request; 
+    SSL_Handler ssl_sock;
 
     while(true){
         ImageLink imLink;
@@ -70,7 +69,7 @@ void Worker::operator()(){
         ss << imLink.i;
         
         //** Important ** All of the images are downloaded to the res/ directory
-        request.getImageToFile(imLink.link, ("res/image" + ss.str()  + ".jpg").c_str());
+        ssl_sock.getImageToFile(imLink.link, (download_dir_ + ss.str() + ".jpg").c_str());
 
         //DEBUG
         {
