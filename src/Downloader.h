@@ -30,12 +30,14 @@ class Worker{
 
 class Downloader{
     public:
-        Downloader() : num_threads_(1) {}
-        Downloader(int num_thread) : num_threads_(num_thread){}
+        Downloader() : num_threads_(1), download_dir_("") {}
+        Downloader(int num_thread, string dir) : num_threads_(num_thread), download_dir_(dir){}
 
         //Request file with all of the image links,
         //parse links, and add them to the queue
         void storeLinks(int startID);
+
+        string getDownloadDir(){return download_dir_;}
 
         //Create all of the threads and start downloading
         void startDownload();
@@ -50,9 +52,6 @@ class Downloader{
         int num_threads_;
         deque<ImageLink> imQueue_;
         mutex queue_mutex_;
-
-        //Used to get the response with all of the image links
-        HTTPRequest request_;
 
         //DEBUGging purposes, mainly to print to the console
         mutex debug_mutex_;

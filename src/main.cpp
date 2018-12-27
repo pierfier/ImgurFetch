@@ -41,20 +41,9 @@ int main(int argc, char *argv[]){
                 in = ifstream(keyFile.c_str());
             }
 
-            in >> global::key;
-            
             //Get the album id
-            ifstream idIn(argv[i+2]);
-
-            //Check if the file exists
-            if(!idIn.good()){
-                string idFile;
-                cout << "Enter album id: ";
-                cin >> idFile;
-                idIn = ifstream(idFile.c_str());
-            }
-            
-            idIn >> global::id;
+            in >> global::key;
+            string(argv[i+2])>> global::id;
 
             //Get the starting number for the image names. 
             //If number not given start at 1 by default
@@ -74,9 +63,10 @@ int main(int argc, char *argv[]){
             }
 
             //Object that handles the downloading of images from album with key "key"
-            Downloader downloader(4);
+            Downloader downloader(4, string("res/"));
             
             //Method to actually get Images
+            
             downloader.storeLinks(startImage);
             downloader.startDownload();
 

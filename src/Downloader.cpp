@@ -3,39 +3,31 @@
 #include <sstream>
 #include <thread>
 #include <mutex>
+#include <vector>
 #include "HTTPRequest.h"
+#include "SSL_Handler.h"
 
 using namespace std;
 
 //Store the links of each image and the number that keeps the images in order
-void Downloader::storeLinks(int startID){
-    string response, link;
-
-    request_.requestLinks(response);
-
-    //Parse the links to the queue
-    
+void Downloader::storeLinks(int startNumImage){
+    SSL_Handler ssl_sock;   
+    vector<string> links;
     int index = 0;
-    int numImages = startID;
+    int numImages = startNumImage;
+    
+    //Parse the links to the queue
+    links = ssl_sock.requestLinks();
     
     ImageLink temp;
-
-    while((index = response.find("<link>", index)) != string::npos){
-        index += 6;
-
-        link = "";
-
-        //Fully read in the link
-        for(; response[index] != '<'; ++index){
-            link += response[index];
-        }
-
-        temp.link = link;
+    
+    //Loop through each element and append a name into a queue
+    vector<string>::iterator it;
+    for(it = links.begin(); it != links.end(); ++it){
+        temp.link = *it;
         temp.i = numImages;
-        
-        //Add link to the queue
+
         imQueue_.push_back(temp);
-        
         ++numImages;
     }
 }
@@ -69,7 +61,7 @@ void Worker::operator()(){
         ss << imLink.i;
         
         //** Important ** All of the images are downloaded to the res/ directory
-        ssl_sock.getImageToFile(imLink.link, (download_dir_ + ss.str() + ".jpg").c_str());
+        ssl_sock.getImageToFile(imLink.link, (downloader_.getDownloadDir() + ss.str() + ".jpg").c_str());
 
         //DEBUG
         {
