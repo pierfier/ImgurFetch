@@ -14,7 +14,7 @@ using namespace std;
 class HTTPRequest {
 	public:
         //Constructor
-        HTTPRequest();
+        HTTPRequest() {};
 
         //Header information for an individual image
         string conImageRequest(const string& link);
@@ -27,12 +27,6 @@ class HTTPRequest {
  
         //Used to parse the links from the response
         vector<string> parseLinks(const string& response);
-
-        //Destructor
-        ~HTTPRequest();
-    private:
-        //Methods
-
 };
 
 #endif

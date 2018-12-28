@@ -28,67 +28,82 @@ int main(int argc, char *argv[]){
     
     //Check for certain arguments
     for(int i = 0; i < argc; ++i){
+
+        //Argument for fetching images from imgur
         if(string(argv[i]) == "-g"){
             
-            //Get the client key
+            //Get the client key file name
             ifstream in(argv[i+1]);
 
             //Check if the file exists
+            //Otherwise prompt for the file name at the commandline
             if(!in.good()){
                 string keyFile;
                 cout << "Enter key file name: ";
                 cin >> keyFile;
                 in = ifstream(keyFile.c_str());
             }
+            
+            in >> global::key;
 
             //Get the album id
-            in >> global::key;
-            string(argv[i+2])>> global::id;
+
+            // Check that there is a next argument and that it is not another argument
+            if(argc < i + 2|| string(argv[i+2])[0] == '-'){
+                
+            }else{
+                global::id = string(argv[i+2]);
+            }
 
             //Get the starting number for the image names. 
             //If number not given start at 1 by default
             //Used if the same book is stored across different albums   
             int startImage = 1;
-            
+            string desFolder = string("res/");
+
             //DEBUG
             cout << "argc (number of arguments): " << argc << endl;
             cout << "index for the starting image: " << i + 3 << endl;
 
-            if(argc > i + 3){
+            //Check that there is a valid argument for the starting image
+            if(argc <= i + 3 || !isdigit(argv[i + 3][0]) ){
+                cout << "Enter the starting number for image file names: " << endl;
+                cin >> startImage;
+            }else{
+                startImage = atoi(argv[i + 3]);
+            }
 
-                //Check if the next argument is a number
-                if(isdigit(argv[i + 3][0])){
-                    startImage = atoi(argv[i + 3]);
-                }
+            //Check for valid argument for the destination folder for the images
+            if(argc <= i + 4){
+                desFolder = string(argv[i+4]);
             }
 
             //Object that handles the downloading of images from album with key "key"
-            Downloader downloader(4, string("res/"));
+            Downloader downloader(4, desFolder);
             
             //Method to actually get Images
-            
             downloader.storeLinks(startImage);
             downloader.startDownload();
 
         }
 
         // "-c" flag parses the list of images, the book folder, the title of the book, and the author
-        
         else if(string(argv[i]) == "-c"){
             vector<string> images;
             string bookDest;
             string imageSrc;
             string title;
             string author;
-            
+            int numImages = 0;
+
             //Check if more command line arguments were given
             if(argc < i + 4){
                 string im = string("c");
                 
                 //Keep reading in the images
                 while(im != ""){
-                    cout << "Enter image file" << endl;
-                    
+                    cout << "Enter image file:" << endl;
+                    cin >> numImages;
                 }
                 
                 cout << "Enter the book folder: ";
@@ -120,8 +135,8 @@ int main(int argc, char *argv[]){
 
         }else if(string(argv[i]) == "--help"){
             cout << "Usage: " << endl;
-            cout  << "\n\t-g <key file> <id file>" << "\t" << "Grab the images from a certain imgur album" << endl << endl;
-            cout  << "\t-c" << "\t" <<  "[num] <book destination> <title> <author>"; 
+            cout  << "\n\t-g <key file> <id>" << "\t" << "Grab the images from a certain imgur album" << endl << endl;
+            cout  << "\t-c [num] <book destination> <title> <author>"\t""; 
             cout << " Compiles all of the images (already downloaded) into an epub file based on the given number" << endl;
         }
 
