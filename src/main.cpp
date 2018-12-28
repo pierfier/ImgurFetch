@@ -49,8 +49,9 @@ int main(int argc, char *argv[]){
             //Get the album id
 
             // Check that there is a next argument and that it is not another argument
-            if(argc < i + 2|| string(argv[i+2])[0] == '-'){
-                
+            if(argc <= i + 2 || string(argv[i+2])[0] == '-'){
+                cout << "Need to specify an album id: " << endl;
+                cin >> global::id;
             }else{
                 global::id = string(argv[i+2]);
             }
@@ -66,15 +67,12 @@ int main(int argc, char *argv[]){
             cout << "index for the starting image: " << i + 3 << endl;
 
             //Check that there is a valid argument for the starting image
-            if(argc <= i + 3 || !isdigit(argv[i + 3][0]) ){
-                cout << "Enter the starting number for image file names: " << endl;
-                cin >> startImage;
-            }else{
+            if(argc > i + 3 && isdigit(argv[i + 3][0]) ){
                 startImage = atoi(argv[i + 3]);
             }
 
             //Check for valid argument for the destination folder for the images
-            if(argc <= i + 4){
+            if(argc > i + 4){
                 desFolder = string(argv[i+4]);
             }
 
@@ -136,7 +134,7 @@ int main(int argc, char *argv[]){
         }else if(string(argv[i]) == "--help"){
             cout << "Usage: " << endl;
             cout  << "\n\t-g <key file> <id>" << "\t" << "Grab the images from a certain imgur album" << endl << endl;
-            cout  << "\t-c [num] <book destination> <title> <author>"\t""; 
+            cout  << "\t-c [num] <book destination> <title> <author>\t"; 
             cout << " Compiles all of the images (already downloaded) into an epub file based on the given number" << endl;
         }
 
