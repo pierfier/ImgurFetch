@@ -100,7 +100,7 @@ int main(int argc, char *argv[]){
                 
                 //Keep reading in the images
                 while(im != ""){
-                    cout << "Enter image file:" << endl;
+                    cout << "Enter the number of the starting image file:" << endl;
                     cin >> numImages;
                 }
                 
