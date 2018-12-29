@@ -87,6 +87,11 @@ int main(int argc, char *argv[]){
 
         // "-c" flag parses the list of images, the book folder, the title of the book, and the author
         else if(string(argv[i]) == "-c"){
+            //New Approach use a file to parse all of the information
+            //Parse the file
+            
+            ifstream inConfig(string(argv[i+1]));
+
             vector<string> images;
             string bookDest;
             string imageSrc;
