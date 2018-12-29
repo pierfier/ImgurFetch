@@ -70,4 +70,6 @@ vector<string> HTTPRequest::parseLinks(const string& response){
         
         links.push_back(tempLink);
     }
+
+    return links;
 }

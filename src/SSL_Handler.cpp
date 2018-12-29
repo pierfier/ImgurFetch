@@ -48,7 +48,7 @@ vector<string> SSL_Handler::requestLinks(){
         response += cur;
     }
 
-    //TODO parse the links into a list and pass them up to the Downloader object
+    // Parse the links into a list and pass them up to the Downloader object
     return http_request_.parseLinks(response);
 }
 

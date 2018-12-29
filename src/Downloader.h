@@ -6,7 +6,9 @@
 #include <mutex>
 #include <condition_variable>
 #include <vector>
+#include <sys/stat.h>
 #include <deque>
+#include <dirent.h>
 #include "HTTPRequest.h"
 
 using namespace std;
@@ -31,7 +33,17 @@ class Worker{
 class Downloader{
     public:
         Downloader() : num_threads_(1), download_dir_("") {}
-        Downloader(int num_thread, string dir) : num_threads_(num_thread), download_dir_(dir){}
+        Downloader(int num_thread, string dir) : num_threads_(num_thread), download_dir_(dir){
+            
+            //Check that the image directory exists, if not create it
+            DIR * desDir = opendir(download_dir_.c_str());
+
+            if(!desDir){
+                mkdir(download_dir_.c_str(), 0777); 
+            }else{
+                closedir(desDir);
+            }
+        }
 
         //Request file with all of the image links,
         //parse links, and add them to the queue

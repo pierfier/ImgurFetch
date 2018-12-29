@@ -43,6 +43,8 @@ void Worker::operator()(){
 
     while(true){
         ImageLink imLink;
+        string extension;
+
         {
             //Get the lock
             unique_lock<mutex> l(downloader_.queue_mutex_);
@@ -60,14 +62,16 @@ void Worker::operator()(){
         stringstream ss;
         ss << imLink.i;
         
-        //** Important ** All of the images are downloaded to the res/ directory
-        ssl_sock.getImageToFile(imLink.link, (downloader_.getDownloadDir() + ss.str() + ".jpg").c_str());
+        //Grab the extension of the link
+        extension = imLink.link.substr(imLink.link.find_last_of("."), string::npos);
+        
+        ssl_sock.getImageToFile(imLink.link, (downloader_.getDownloadDir() + ss.str() + extension).c_str());
 
         //DEBUG
         {
             unique_lock<mutex> l(downloader_.debug_mutex_);
 
-            cout << "Downloaded image " << imLink.i << endl; 
+            cout << "Downloaded image " << imLink.i << " with " << imLink.link << endl; 
         }
     }
 }

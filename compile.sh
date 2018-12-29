@@ -1,2 +1,2 @@
-g++ src/*.cpp -lssl -lcrypto
-./a.out -g 3lV6s
+make
+./imgurfetch -g key.txt 3lV6s
