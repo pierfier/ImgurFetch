@@ -99,29 +99,8 @@ int main(int argc, char *argv[]){
             string author;
             int numImages = 0;
 
-            //Check if more command line arguments were given
-            if(argc < i + 4){
-                string im = string("c");
-                
-                //Keep reading in the images
-                while(im != ""){
-                    cout << "Enter the number of the starting image file:" << endl;
-                    cin >> numImages;
-                }
-                
-                cout << "Enter the book folder: ";
-                cin >> bookDest;
-                
-                cout << "Enter the title of the book: ";
-                cin >> title;
-                
-                cout << "Enter the author of the book: ";
-                cin >> author;
+            //Read in each line from the config file
 
-            }else{
-                
-                //Parse the commandline arguments into the variables
-            }
             
             //Initialize compiler object
             epubCompiler eCompiler(bookDest, title, author);

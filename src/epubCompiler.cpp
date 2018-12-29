@@ -1,14 +1,19 @@
-#include "epubCompiler.h"
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <dirent.h>
+#include "epubCompiler.h"
 
 using namespace std;
 
 epubCompiler::epubCompiler(const string& bookFolder_, const string & title,
             const string& author) :
                 bookFolder_(bookFolder_), title_(title), author_(author){
-    
+    // Create the bookfolder directory if it does not exist
+    DIR* bookDir = opendir(bookFolder_);
+    //TODO finish here
+
+    // Create the files needed for the epub
     createMimeType();
     createMETAINF();
     createXHTML();
