@@ -2,6 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include <dirent.h>
+#include <sys/stat.h>
 #include "epubCompiler.h"
 
 using namespace std;
@@ -9,9 +10,23 @@ using namespace std;
 epubCompiler::epubCompiler(const string& bookFolder_, const string & title,
             const string& author) :
                 bookFolder_(bookFolder_), title_(title), author_(author){
+    
     // Create the bookfolder directory if it does not exist
-    DIR* bookDir = opendir(bookFolder_);
-    //TODO finish here
+    DIR* tempDir = opendir(bookFolder_);
+    
+    if(tempDir){
+        closedir(tempDir);
+    }else{
+        mkdir(bookFolder_.c_str(), 0666);
+    }
+    
+    // Create the Meta-Inf directory
+    tempDir = opendir(bookFolder_ + string("META-INF"));
+    if(tempDir){
+        closedir(tempDir);
+    }else{
+        mkdir(string(bookFolder_ + "META-INF"), 0666);
+    }
 
     // Create the files needed for the epub
     createMimeType();
