@@ -87,12 +87,11 @@ int main(int argc, char *argv[]){
 
         // "-c" flag parses the list of images, the book folder, the title of the book, and the author
         else if(string(argv[i]) == "-c"){
+            
             //New Approach use a file to parse all of the information
             //Parse the file
-            
             ifstream inConfig(string(argv[i+1]));
 
-            vector<string> images;
             string bookDest;
             string imageSrc;
             string title;
@@ -100,25 +99,19 @@ int main(int argc, char *argv[]){
             int numImages = 0;
 
             //Read in each line from the config file
-
+            string line;
+            while(getline(inConfig, line)){
+                
+            }
             
             //Initialize compiler object
             epubCompiler eCompiler(bookDest, title, author);
-            string file;
-
-            for(int i = 0; i < numImages; ++i){
-                stringstream ss;
-                ss << (i + 1);
-
-                file = "images/image" + ss.str();
-
-                eCompiler.addImage(file, i);
-            }
-
+        
+            
         }else if(string(argv[i]) == "--help"){
-            cout << "Usage: " << endl;
-            cout  << "\n\t-g <key file> <id>" << "\t" << "Grab the images from a certain imgur album" << endl << endl;
-            cout  << "\t-c [num] <book destination> <title> <author>\t"; 
+            cout << "Usage:" << endl;
+            cout  << "-g\t<key file> <id>" << "\t" << "Grab the images from a certain imgur album" << endl << endl;
+            cout  << "-c\t<config file>\t"; 
             cout << " Compiles all of the images (already downloaded) into an epub file based on the given number" << endl;
         }
 
