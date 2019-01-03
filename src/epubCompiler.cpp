@@ -21,11 +21,19 @@ epubCompiler::epubCompiler(const string& bookFolder_, const string & title,
     }
     
     // Create the Meta-Inf directory
-    tempDir = opendir(bookFolder_ + string("META-INF"));
+    tempDir = opendir(bookFolder_ + string("/META-INF"));
     if(tempDir){
         closedir(tempDir);
     }else{
-        mkdir(string(bookFolder_ + "META-INF"), 0666);
+        mkdir(string(bookFolder_ + "/META-INF"), 0666);
+    }
+
+    //Create the OEBPS directory
+    tempDir = opendir(bookFolder_ + string("/OEBPS"));
+    if(tempDir){
+        closedir(tempDir);
+    }else{
+        mkdir(string(bookFolder_ + "/OEBPS"), 0666);
     }
 
     // Create the files needed for the epub
@@ -33,7 +41,7 @@ epubCompiler::epubCompiler(const string& bookFolder_, const string & title,
     createMETAINF();
     createXHTML();
     createContentOPF();
-    createTOC();    
+    createTOC();
 }
 
 //Creates mimetype file with a single line
@@ -73,18 +81,17 @@ void epubCompiler::createMETAINF(){
 
 //Adds the header files to the xhtml
 void epubCompiler::createXHTML(){
-    ofstream out(string(bookFolder_ + "/OEBPS/main.html").c_str(), ofstream::out);
+    ofstream outCon(string(bookFolder_ + "/OEBPS/main.html").c_str(), ofstream::outCon);
     
-    out << "<?xml version=\"1.0\" encoding=\"utf-8\"?>" << endl;
-    out << "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\"" << endl;
-    out << "\"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">" << endl;
-    out << "<html xmlns=\"http://www.w3.org/1999/xhtml\">" << endl;
-    out << "<head>" << endl;
-    out << "<title>Book</title>" << endl;
-    out << "</head>" << endl;
-    out << "<body>" << endl;
-    out << "<div>" << endl;
-    out.close();
+    outCon << "<?xml version=\"1.0\" encoding=\"utf-8\"?>" << endl;
+    outCon << "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\"" << endl;
+    outCon << "\"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">" << endl;
+    outCon << "<html xmlns=\"http://www.w3.org/1999/xhtml\">" << endl;
+    outCon << "<head>" << endl;
+    outCon << "<title>Book</title>" << endl;
+    outCon << "</head>" << endl;
+    outCon << "<body>" << endl;
+    outCon << "<div>" << endl;
 }
 
 void epubCompiler::finishXHTML(){
@@ -109,7 +116,7 @@ void epubCompiler::addImage(const string& fileName, int num){
     out << fileName;
     out << "\" alt=\"--\"/>" << endl;
 
-    //Add image to the manifest
+    //Add image to the content.opf (manifest)
     outM << "<item id=\"img"; //use the name of the file name minus the extension
     outM << "\" href=\"" << fileName;
     outM << "\" media-type=\"image/jpeg\" />" << endl;
@@ -122,29 +129,38 @@ void epubCompiler::addImage(const string& fileName, int num){
 //the middle of the manifest where images are being referenced
 void epubCompiler::createContentOPF(){
 
-    ofstream out(string(bookFolder_ + "/OEBPS/content.opf").c_str(), ofstream::out); 
+    ofstream outMan(string(bookFolder_ + "/OEBPS/content.opf").c_str(), ofstream::out); 
 
     //Check file created
-    if(!out.is_open()){
+    if(!outMan.is_open()){
         cerr << "Content Manifest not created" << endl;
         exit(1);
     }
 
     //Write all of the data
-    out << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << endl;
-    out << "<package xmlns=\"http://www.idpf.org/2007/opf\" unique-identifier=\"BookID\" version=\"2.0\" >" << endl;
-    out << "<metadata xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:opf=\"http://www.idpf.org/2007/opf\">" << endl;
-    out << "<dc:title>" << title_ << "</dc:title>" << endl;
-    out << "<dc:creator opf:role=\"aut\">Yoda47</dc:creator>" << endl;
-    out << "<dc:language>en-US</dc:language>" << endl; 
-    out << "<dc:rights>Imgur</dc:rights>" << endl;
-    out << "<dc:publisher> Imgur website</dc:publisher>" << endl;
-    out << "<dc:identifier id=\"BookID\" opf:scheme=\"UUID\">qwertystorm1234567890</dc:identifier>" << endl;
-    out << "</metadata>" << endl;
-    out << "<manifest>" << endl;
-    out << "<item id=\"ncx\" href=\"toc.ncx\" media-type=\"application/x-dtbncx+xml\" />" << endl;
-    out << "<item id=\"book\" href=\"main.html\" media-type=\"application/xhtml+xml\" />" << endl;
-    out.close();
+    outMan << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << endl;
+    outMan << "<package xmlns=\"http://www.idpf.org/2007/opf\" unique-identifier=\"BookID\" version=\"2.0\" >" << endl;
+    outMan << "<metadata xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:opf=\"http://www.idpf.org/2007/opf\">" << endl;
+    outMan << "<dc:title>" << title_ << "</dc:title>" << endl;
+    outMan << "<dc:creator opf:role=\"aut\">Yoda47</dc:creator>" << endl;
+    outMan << "<dc:language>en-US</dc:language>" << endl; 
+    outMan << "<dc:rights>Imgur</dc:rights>" << endl;
+    outMan << "<dc:publisher> Imgur website</dc:publisher>" << endl;
+    outMan << "<dc:identifier id=\"BookID\" opf:scheme=\"UUID\">qwertystorm1234567890</dc:identifier>" << endl;
+    outMan << "</metadata>" << endl;
+    outMan << "<manifest>" << endl;
+    outMan << "<item id=\"ncx\" href=\"toc.ncx\" media-type=\"application/x-dtbncx+xml\" />" << endl;
+    outMan << "<item id=\"book\" href=\"main.html\" media-type=\"application/xhtml+xml\" />" << endl;
+}
+
+//Finish the content.opf file
+void epubCompiler::finishContentOPF(){
+    outMan << "</manifest>" << endl;
+    outMan << "<spine toc=\"ncx\">" << endl;
+    outMan << "    <itemref idref=\"book\" />" << endl;
+    outMan << "</spine>" << endl;
+    outMan << "</package>" << endl;
+    outMan.close();
 }
 
 //Creates the table of contents file
@@ -170,24 +186,6 @@ void epubCompiler::createTOC(){
     out << "</navPoint>" << endl;
     out << "</navMap>" << endl;
     out << "</ncx>" << endl;
-    out.close();
-}
-
-//Finish the content.opf file
-void epubCompiler::finishContentOPF(){
-     ofstream out(string(bookFolder_ + "/OEBPS/content.opf").c_str(), ofstream::app); 
-
-    //Check file created
-    if(!out.is_open()){
-        cerr << "Unable to reopen content.opf" << endl;
-        exit(1);
-    }
-    
-    out << "</manifest>" << endl;
-    out << "<spine toc=\"ncx\">" << endl;
-    out << "    <itemref idref=\"book\" />" << endl;
-    out << "</spine>" << endl;
-    out << "</package>" << endl;
     out.close();
 }
 

@@ -33,4 +33,8 @@ class epubCompiler{
         string bookFolder_;
         string title_;
         string author_;
+        
+        //ofstreams for the main html and manifest file
+        ofstream outMan;
+        ofstream outCon;
 };
