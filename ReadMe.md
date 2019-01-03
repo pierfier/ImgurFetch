@@ -9,4 +9,7 @@ directly from imgur.
 
 The key and id must from come a file specified as a commandline argument
 
-The epub file creation is based on epub file tutorial
+Compilation of the ePUB
+=======================
+- All of the images are downloaded in the indicated file
+- It is up to the USER to determine what picture is to be the cover photo. It must be named "cover" plus the extension of the image.

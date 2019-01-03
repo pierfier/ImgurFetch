@@ -102,8 +102,8 @@ int main(int argc, char *argv[]){
             string line, field, argm;
             while(getline(inConfig, line)){
                 // Get the name of the field
-                field = line.substr(0, line.find(":") + 1);
-                argm = line.substr(line.find(":"), string::npos);
+                field = line.substr(0, line.find(":"));
+                argm = line.substr(line.find(":") + 1, string::npos);
 
                 //DEBUG
                 cout << "Field: " << field << endl;

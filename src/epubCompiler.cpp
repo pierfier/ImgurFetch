@@ -19,7 +19,7 @@ epubCompiler::epubCompiler(const string& bookFolder_, const string & title,
     if(tempDir){
         closedir(tempDir);
     }else{
-        mkdir(bookFolder_.c_str(), 0666);
+        mkdir(bookFolder_.c_str(), 0777);
     }
     
     // Create the Meta-Inf directory
@@ -27,7 +27,7 @@ epubCompiler::epubCompiler(const string& bookFolder_, const string & title,
     if(tempDir){
         closedir(tempDir);
     }else{
-        mkdir((bookFolder_ + "/META-INF").c_str(), 0666);
+        mkdir((bookFolder_ + "/META-INF").c_str(), 0777);
     }
 
     //Create the OEBPS directory
@@ -35,7 +35,15 @@ epubCompiler::epubCompiler(const string& bookFolder_, const string & title,
     if(tempDir){
         closedir(tempDir);
     }else{
-        mkdir((bookFolder_ + "/OEBPS").c_str(), 0666);
+        mkdir((bookFolder_ + "/OEBPS").c_str(), 0777);
+    }
+
+    //Create the images subdirectory
+    tempDir = opendir((bookFolder_ + "/OEBPS/images").c_str());
+    if(tempDir){
+        closedir(tempDir);
+    }else{
+        mkdir((bookFolder_ + "/OEBPS/images").c_str(), 0777);
     }
 
     // Create the files needed for the epub
@@ -111,13 +119,20 @@ void epubCompiler::finishXHTML(){
 void epubCompiler::addImages(const string& imgDir){
     //TODO need to badly fix this function so that it reads in the 
     //image directory and add the corresponding images
+    string coverImage;
+    DIR * dir = opendir();
+    struct dirent * 
+    
+
 
     //Add image to the xhtml file
     outMain << "<img src=\"";
     outMain << imgDir;
     outMain << "\" alt=\"--\"/>" << endl;
 
-    //Add image to the content.opf (manifest)
+    //Add cover image to the content.opf (manifest)
+    outMan << "<item id=\"cover-image\" href=\""
+    
     outMan << "<item id=\"img"; //use the name of the file name minus the extension
     outMan << "\" href=\"" << imgDir;
     outMan << "\" media-type=\"image/jpeg\" />" << endl;
