@@ -99,20 +99,37 @@ int main(int argc, char *argv[]){
             int numImages = 0;
 
             //Read in each line from the config file
-            string line;
+            string line, field, argm;
             while(getline(inConfig, line)){
-                
+                // Get the name of the field
+                field = line.substr(0, line.find(":") + 1);
+                argm = line.substr(line.find(":"), string::npos);
+
+                //DEBUG
+                cout << "Field: " << field << endl;
+                cout << "Argument: " << argm << endl;
+
+                // Parse the particular field
+                if(field == string("root")){
+                    bookDest = argm;
+                }else if(field == string("title")){
+                    title = argm;
+                }else if(field == string("author")){
+                    author = argm;
+                }else if(field == string("res")){
+                    imageSrc = argm;
+                }
             }
             
             //Initialize compiler object
             epubCompiler eCompiler(bookDest, title, author);
         
-            
+            // Write all of the images from the directory into the manifest and content.html files
+            eCompiler.addImages(imageSrc);
         }else if(string(argv[i]) == "--help"){
             cout << "Usage:" << endl;
             cout  << "-g\t<key file> <id>" << "\t" << "Grab the images from a certain imgur album" << endl << endl;
-            cout  << "-c\t<config file>\t"; 
-            cout << " Compiles all of the images (already downloaded) into an epub file based on the given number" << endl;
+            cout  << "-c\t<config file>\tInclude the root book directory(root), book title(title), author(author), and source folder of all of the images including a cover image(res)"; 
         }
 
     }
