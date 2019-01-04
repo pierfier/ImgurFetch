@@ -120,8 +120,8 @@ void epubCompiler::addImages(const string& imgDir){
     //TODO need to badly fix this function so that it reads in the 
     //image directory and add the corresponding images
     string coverImage;
-    DIR * dir = opendir();
-    struct dirent * 
+    DIR * dir = opendir(imgDir.c_str());
+    struct dirent * ent;
     
 
 
