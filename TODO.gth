@@ -1,7 +1,17 @@
 ------------------- TODOs -----------------------
+
+Main Program
+============
 #1 [Done]: Actually organize everything into classes
 #2 [Done]: Create a Thread pool model, and a queue to grab all of the images
 #3 [Non-essential]: Have a way for the program to add onto the images list without overwritting already downloaded images
 #4 [Low]: Reference the epub tutorial website
 #5 [Medium]: Need to include table of contents file
 #6 [High]: Add cover image
+#7 [Low]: Change the parsing of options as -gc instead of -g -c
+#8 [Medium]: Change the strategy of epubCompilier by first writing to strings and then write to the files at the end by a close function
+
+
+UI Front end
+============
+#1 [High]: Connect frontend with backend
