@@ -10,7 +10,7 @@ Main Program
 #6 [High]: Add cover image
 #7 [Low]: Change the parsing of options as -gc instead of -g -c
 #8 [Medium]: Change the strategy of epubCompilier by first writing to strings and then write to the files at the end by a close function
-
+#9 [Low]: Setup as an AUR Build package
 
 UI Front end
 ============
