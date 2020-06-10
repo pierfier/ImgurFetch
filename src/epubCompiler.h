@@ -31,7 +31,9 @@ class epubCompiler{
         string title_;
         string author_;
         
-        //ofstreams for the main html and manifest file
-        ofstream outMan;
-        ofstream outMain;
+        //Strings to hold all of the continuously modified files
+        
+        string toc_; //Stores the table of contents (toc.ncx)
+        string content_man_; //Stores the information for the manifest (content.opf)
+        vector<string> chapter_xhtml_; //Stores the image information for each chapter (later separated into main.html files)
 };

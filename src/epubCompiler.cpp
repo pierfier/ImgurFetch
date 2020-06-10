@@ -56,6 +56,7 @@ epubCompiler::epubCompiler(const string& bookFolder_, const string & title,
 
 //Creates mimetype file with a single line
 //If it does not exist already
+//This does not need a running string file because it is literally one line that is needed
 void epubCompiler::createMimeType(){
     ofstream out((bookFolder_ + "/mimetype").c_str(), ofstream::out);
     
@@ -91,17 +92,13 @@ void epubCompiler::createMETAINF(){
 
 //Adds the header files to the xhtml
 void epubCompiler::createXHTML(){
-    ofstream outMain((bookFolder_ + "/OEBPS/main.html").c_str(), ofstream::out);
-    
-    outMain << "<?xml version=\"1.0\" encoding=\"utf-8\"?>" << endl;
-    outMain << "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\"" << endl;
-    outMain << "\"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">" << endl;
-    outMain << "<html xmlns=\"http://www.w3.org/1999/xhtml\">" << endl;
-    outMain << "<head>" << endl;
-    outMain << "<title>Book</title>" << endl;
-    outMain << "</head>" << endl;
-    outMain << "<body>" << endl;
-    outMain << "<div>" << endl;
+
+    // Add to single xhtml
+    main_xhtml_ += "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
+    main_xhtml_ += "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\">\n";
+    main_xhtml_ += "<head>\n";
+    main_xhtml_ += "<title>Book</title>\n";
+    main_xhtml_ += "</head>\n<body>\n<div>\n";
 }
 
 void epubCompiler::finishXHTML(){
@@ -111,6 +108,7 @@ void epubCompiler::finishXHTML(){
     out << "</body>" << endl;
     out << "</html>" << endl;
     out.close();
+
 }
 
 //Write the image tag to the manifest of Content OPF
@@ -124,14 +122,13 @@ void epubCompiler::addImages(const string& imgDir){
     struct dirent * ent;
     
 
-
     //Add image to the xhtml file
     outMain << "<img src=\"";
     outMain << imgDir;
     outMain << "\" alt=\"--\"/>" << endl;
 
     //Add cover image to the content.opf (manifest)
-    outMan << "<item id=\"cover-image\" href=\""
+    outMan << "<item id=\"cover-image\" href=\"";
     
     outMan << "<item id=\"img"; //use the name of the file name minus the extension
     outMan << "\" href=\"" << imgDir;
