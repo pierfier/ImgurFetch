@@ -12,8 +12,8 @@ class epubCompiler{
     public:     
         epubCompiler(const string& bookFolder, const string& title, const string& author);
         
-        //Looks into the folder to find the cover and content images
-        void addImages(const string& imgDir);
+        //Adds 
+        void addImage(const string& imgDir, string& chapter_html);
         
         ~epubCompiler();
     private:
