@@ -26,8 +26,10 @@ class epubCompiler{
         void createContentOPF();
         void finishContentOPF();
 
-        //Attributes to the ebook
+        //Local folder used to compose the book
         string bookFolder_;
+        
+        //Attributes to the ebook
         string title_;
         string author_;
         

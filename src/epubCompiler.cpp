@@ -90,8 +90,10 @@ void epubCompiler::createMETAINF(){
     out.close();
 }
 
-//Adds the header files to the xhtml
+//Adds the header files to each xhtml chapter file
 void epubCompiler::createXHTML(){
+
+    
 
     // Add to single xhtml
     main_xhtml_ += "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
@@ -101,13 +103,25 @@ void epubCompiler::createXHTML(){
     main_xhtml_ += "</head>\n<body>\n<div>\n";
 }
 
+//Finish all of the chapter xhtml files
 void epubCompiler::finishXHTML(){
-    ofstream out((bookFolder_ + "/OEBPS/main.html").c_str(), ofstream::app);
+    // Add finishing tags to all of the chapter strings
+    for(int i = 0; i < chapter_xhtml_.size(); ++i){
+        chapter_xhtml_[i] += "</div>" << endl;
+        chapter_xhtml_[i] += "</body>" << endl;
+        chapter_xhtml_[i] += "</html>" << endl;
     
-    out << "</div>" << endl;
-    out << "</body>" << endl;
-    out << "</html>" << endl;
-    out.close();
+        
+        // Write all of the chapters to files
+        ofstream out((bookFolder_ + "/OEBPS/chapter" + itoa(i+1) + ".html").c_str(), ofstream::out);
+        out.write(chapter_xhtml_[i]);
+
+        out.close();
+    }
+
+    
+    
+
 
 }
 
