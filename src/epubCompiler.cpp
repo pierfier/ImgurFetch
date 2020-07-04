@@ -90,17 +90,17 @@ void epubCompiler::createMETAINF(){
     out.close();
 }
 
-//Adds the header files to each xhtml chapter file
-void epubCompiler::createXHTML(){
+//Adds the header files to xhtml chapter file
+void epubCompiler::createXHTML(string & chapter){
 
     
 
     // Add to single xhtml
-    main_xhtml_ += "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
-    main_xhtml_ += "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\">\n";
-    main_xhtml_ += "<head>\n";
-    main_xhtml_ += "<title>Book</title>\n";
-    main_xhtml_ += "</head>\n<body>\n<div>\n";
+    chapter += "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
+    chapter += "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\">\n";
+    chapter += "<head>\n";
+    chapter += "<title>Book</title>\n";
+    chapter += "</head>\n<body>\n<div>\n";
 }
 
 //Finish all of the chapter xhtml files
@@ -119,10 +119,12 @@ void epubCompiler::finishXHTML(){
         out.close();
     }
 
-    
-    
+}
 
+// Either try to find images in this folder, or search for individual chapter subfolders
+void epubCompiler::compile(const string& rootImageSrc){
 
+    // TODO recursively read through any new subfolders, append to chapter_xhtml_ array with a new chapter string
 }
 
 //Write image to the respective chapter html string

@@ -12,9 +12,12 @@ class epubCompiler{
     public:     
         epubCompiler(const string& bookFolder, const string& title, const string& author);
         
-        //Adds 
+        // Add the image information to the chapter xhmtl and the manifest
         void addImage(const string& imgDir, string& chapter_html);
         
+        // Entry point for starting the build of the epub
+        void compile(const string& rootImageSrc);
+
         ~epubCompiler();
     private:
         //Starts the creation of the files

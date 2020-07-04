@@ -101,6 +101,7 @@ int main(int argc, char *argv[]){
             //Read in each line from the config file
             string line, field, argm;
             while(getline(inConfig, line)){
+
                 // Get the name of the field
                 field = line.substr(0, line.find(":"));
                 argm = line.substr(line.find(":") + 1, string::npos);
@@ -124,8 +125,9 @@ int main(int argc, char *argv[]){
             //Initialize compiler object
             epubCompiler eCompiler(bookDest, title, author);
         
-            // Write all of the images from the directory into the manifest and content.html files
-            eCompiler.addImages(imageSrc);
+            // Compile the epub with the root image source
+            epubCompiler.compile(imageSrc);
+
         }else if(string(argv[i]) == "--help"){
             cout << "Usage:" << endl;
             cout  << "-g\t<key file> <id>" << "\t" << "Grab the images from a certain imgur album" << endl << endl;
