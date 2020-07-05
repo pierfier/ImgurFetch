@@ -123,8 +123,12 @@ void epubCompiler::finishXHTML(){
 
 // Either try to find images in this folder, or search for individual chapter subfolders
 void epubCompiler::compile(const string& rootImageSrc){
-
+    
     // TODO recursively read through any new subfolders, append to chapter_xhtml_ array with a new chapter string
+    DIR * dir;
+    struct dirent * ent;
+
+    
 }
 
 //Write image to the respective chapter html string
