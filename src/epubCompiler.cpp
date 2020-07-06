@@ -125,10 +125,30 @@ void epubCompiler::finishXHTML(){
 void epubCompiler::compile(const string& rootImageSrc){
     
     // TODO recursively read through any new subfolders, append to chapter_xhtml_ array with a new chapter string
-    DIR * dir;
+    DIR * dir, subdir;
     struct dirent * ent;
 
+    if(dir = opendir(rootImageSrc)){
+        
+        // Initialize first chapter element of chapters vector
+        
+
+        while(ent = readdir(dir) != NULL){
+            // Check that it is a subdirectory
+            if(subdir = opendir(ent->d_name)){
+                // Read in the directory and start adding the images from this chapter
+
+            }else{
+                // Entry is a file
+
+            }
+        }
+
+    }else{
+        cout << "Directory " << rootImageSrc << " does not exist\n";
+    }
     
+
 }
 
 //Write image to the respective chapter html string
