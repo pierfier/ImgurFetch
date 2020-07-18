@@ -93,8 +93,6 @@ void epubCompiler::createMETAINF(){
 //Adds the header files to xhtml chapter file
 void epubCompiler::createXHTML(string & chapter){
 
-    
-
     // Add to single xhtml
     chapter += "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     chapter += "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\">\n";
@@ -104,7 +102,7 @@ void epubCompiler::createXHTML(string & chapter){
 }
 
 //Finish all of the chapter xhtml files
-void epubCompiler::finishXHTML(){
+void epubCompiler::finishXHTMLs(){
     // Add finishing tags to all of the chapter strings
     for(int i = 0; i < chapter_xhtml_.size(); ++i){
         chapter_xhtml_[i] += "</div>" << endl;
@@ -122,6 +120,7 @@ void epubCompiler::finishXHTML(){
 }
 
 // Either try to find images in this folder, or search for individual chapter subfolders
+// There should only be two levels so I think continuously checking is not necessary
 void epubCompiler::compile(const string& rootImageSrc){
     
     // TODO recursively read through any new subfolders, append to chapter_xhtml_ array with a new chapter string
@@ -129,17 +128,34 @@ void epubCompiler::compile(const string& rootImageSrc){
     struct dirent * ent;
 
     if(dir = opendir(rootImageSrc)){
-        
+
         // Initialize first chapter element of chapters vector
-        
+        string ch1 = string("");
+        createXHTML(ch1);
+        chapter_xhtml_.push_back(ch1);
+
+        bool is_first_chapter = true;
 
         while(ent = readdir(dir) != NULL){
             // Check that it is a subdirectory
             if(subdir = opendir(ent->d_name)){
-                // Read in the directory and start adding the images from this chapter
+                if(is_first_chapter){
+                    is_first_chapter = false;
+                }else{
+                    string new_chap = string("");
+                    createXHTML(new_chap);
+                    chapter_xhtml_.push_back(new_chap);
+                }
+
+                // Read in the directory and start adding the images into the current chapter this chapter
+                
+                // TODO function to pass a directory and chapter string and just add and read in everything
+                // Use same function below if image found is not a cover image
 
             }else{
                 // Entry is a file
+                
+                //TODO check if it is a cover image
 
             }
         }
