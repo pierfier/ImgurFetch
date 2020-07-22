@@ -138,7 +138,7 @@ void epubCompiler::compile(const string& rootImageSrc){
 
         while(ent = readdir(dir) != NULL){
             // Check that it is a subdirectory
-            if(subdir = opendir(ent->d_name)){
+            if(subdir = opendir(ent->d_name) != NULL){
                 if(is_first_chapter){
                     is_first_chapter = false;
                 }else{
@@ -148,15 +148,18 @@ void epubCompiler::compile(const string& rootImageSrc){
                 }
 
                 // Read in the directory and start adding the images into the current chapter this chapter
-                
-                // TODO function to pass a directory and chapter string and just add and read in everything
-                // Use same function below if image found is not a cover image
+                addChapter(ent->d_name, chapter_xhtml_[chapter_xhtml_.size() - 1]);
 
             }else{
                 // Entry is a file
                 
-                //TODO check if it is a cover image
-
+                // Check if its a cover image
+                if(){
+                    
+                }else{
+                    
+                    addChapter(, chapter_xhtml_[chapter_xhtml_.size() - 1]);
+                }              
             }
         }
 
@@ -167,20 +170,34 @@ void epubCompiler::compile(const string& rootImageSrc){
 
 }
 
+//Folder directory must only contain image files
 //Write image to the respective chapter html string
 //Add the image source to the manifest
-void epubCompiler::addImage(const string& imgDir, string& chapter){
+void epubCompiler::addChapter(const string& imgDir, string& chapter){
     
-    //Add the image to the main body of the html
-    chapter += "<img src=\"" + imgDir + "\" alt=\"--\"/>\n";
+    DIR * dir, subdir;
+    struct dirent * ent;
 
-    //Get the file type from the name
-    size_t ext_start = imgDir.find(".");
-    string extension = imgDir.substr(ext_start, string::npos);
+    if(dir = opendir(imgDir)){
+        
+        while(ent = readdir(dir) != NULL){
+            //TODO make sure that cover image is not read
+            
+            //Add the image to the main body of the html
+            chapter += "<img src=\"" + ent->d_name + "\" alt=\"--\"/>\n";
 
-    //Add image source to the manifest of (content.opf)
-    content_man_ += "<item id=\"img\" href=\"" + imgDir;
-    content_man_ += "\" media-type=\"image/" + extension + "\"/>\n";
+            //Get the file type from the name
+            size_t ext_start = ent->d_name.find(".");
+            string extension = ent->d_name.substr(ext_start, string::npos);
+
+            //Add image source to the manifest of (content.opf)
+            content_man_ += "<item id=\"img\" href=\"" + ent->d_name;
+            content_man_ += "\" media-type=\"image/" + extension + "\"/>\n";
+        }
+
+    }else{
+        cout << "Error reading directory " << dir << endl;
+    }
 }   
 
 //This method adds to Content.opf string up until
@@ -225,6 +242,7 @@ void epubCompiler::finishContentOPF(){
 }
 
 //Creates the table of contents file
+// TODO change to include each
 void epubCompiler::createTOC(){
     toc_ << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << endl;
     toc_ << "<ncx xmlns=\"http://www.daisy.org/z3986/2005/ncx/\" version=\"2005-1\">" << endl;
@@ -240,7 +258,7 @@ void epubCompiler::createTOC(){
     toc_ << "<navMap>" << endl;
     toc_ << "<navPoint id=\"chapter01\" playOrder=\"1\">" << endl;
     toc_ << "<navLabel>" << endl;
-    toc_ << "<text>Chapter 1</text>" << endl;
+    toc_ << "<text>Chapter 1</text>" << endl; // TODO include the chapter html files
     toc_ << "</navLabel>" << endl;
     toc_ << "<content src=\"main.html\"/>" << endl;
     toc_ << "</navPoint>" << endl;
