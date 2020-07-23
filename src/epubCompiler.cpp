@@ -1,6 +1,7 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <locale>
 #include <dirent.h>
 #include <sys/stat.h>
 #include <stdlib.h>
@@ -123,7 +124,6 @@ void epubCompiler::finishXHTMLs(){
 // There should only be two levels so I think continuously checking is not necessary
 void epubCompiler::compile(const string& rootImageSrc){
     
-    // TODO recursively read through any new subfolders, append to chapter_xhtml_ array with a new chapter string
     DIR * dir, subdir;
     struct dirent * ent;
 
@@ -154,10 +154,10 @@ void epubCompiler::compile(const string& rootImageSrc){
                 // Entry is a file
                 
                 // Check if its a cover image
-                if(){
-                    
+                locale loc;
+                if(tolower(ent->d_name, loc).find(string("cover")) != std::string::npos){
+                    //TODO add cover image
                 }else{
-                    
                     addChapter(, chapter_xhtml_[chapter_xhtml_.size() - 1]);
                 }              
             }
@@ -181,18 +181,20 @@ void epubCompiler::addChapter(const string& imgDir, string& chapter){
     if(dir = opendir(imgDir)){
         
         while(ent = readdir(dir) != NULL){
-            //TODO make sure that cover image is not read
+            locale loc;
+            if(tolower(ent->d_name, loc).find(string("cover")) == std::string::npos){
             
-            //Add the image to the main body of the html
-            chapter += "<img src=\"" + ent->d_name + "\" alt=\"--\"/>\n";
+                //Add the image to the main body of the html
+                chapter += "<img src=\"" + ent->d_name + "\" alt=\"--\"/>\n";
 
-            //Get the file type from the name
-            size_t ext_start = ent->d_name.find(".");
-            string extension = ent->d_name.substr(ext_start, string::npos);
+                //Get the file type from the name
+                size_t ext_start = ent->d_name.find(".");
+                string extension = ent->d_name.substr(ext_start, string::npos);
 
-            //Add image source to the manifest of (content.opf)
-            content_man_ += "<item id=\"img\" href=\"" + ent->d_name;
-            content_man_ += "\" media-type=\"image/" + extension + "\"/>\n";
+                //Add image source to the manifest of (content.opf)
+                content_man_ += "<item id=\"img\" href=\"" + ent->d_name;
+                content_man_ += "\" media-type=\"image/" + extension + "\"/>\n";
+            }
         }
 
     }else{
@@ -215,55 +217,62 @@ void epubCompiler::createContentOPF(){
     }
 
     //Write all of the data
-    content_man_ << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << endl;
-    content_man_ << "<package xmlns=\"http://www.idpf.org/2007/opf\" unique-identifier=\"BookID\" version=\"2.0\" >" << endl;
-    content_man_ << "<metadata xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:opf=\"http://www.idpf.org/2007/opf\">" << endl;
-    content_man_ << "<dc:title>" << title_ << "</dc:title>" << endl;
-    content_man_ << "<dc:creator opf:role=\"aut\">Yoda47</dc:creator>" << endl;
-    content_man_ << "<dc:language>en-US</dc:language>" << endl; 
-    content_man_ << "<dc:rights>Imgur</dc:rights>" << endl;
-    content_man_ << "<dc:publisher> Imgur website</dc:publisher>" << endl;
-    content_man_ << "<dc:identifier id=\"BookID\" opf:scheme=\"UUID\">";
-    content_man_ << uuid << "</dc:identifier>" << endl;
-    content_man_ << "</metadata>" << endl;
-    content_man_ << "<manifest>" << endl;
-    content_man_ << "<item id=\"ncx\" href=\"toc.ncx\" media-type=\"application/x-dtbncx+xml\" />" << endl;
-    content_man_ << "<item id=\"book\" href=\"main.html\" media-type=\"application/xhtml+xml\" />" << endl;
+    content_man_ += "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+    content_man_ += "<package xmlns=\"http://www.idpf.org/2007/opf\" unique-identifier=\"BookID\" version=\"2.0\" >\n";
+    content_man_ += "<metadata xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:opf=\"http://www.idpf.org/2007/opf\">\n";
+    content_man_ += "<dc:title>" << title_ << "</dc:title>\n";
+    content_man_ += "<dc:creator opf:role=\"aut\">Yoda47</dc:creator>\n";
+    content_man_ += "<dc:language>en-US</dc:language>\n"; 
+    content_man_ += "<dc:rights>Imgur</dc:rights>\n";
+    content_man_ += "<dc:publisher> Imgur website</dc:publisher>\n";
+    content_man_ += "<dc:identifier id=\"BookID\" opf:scheme=\"UUID\">";
+    content_man_ += uuid << "</dc:identifier>\n";
+    content_man_ += "</metadata>\n";
+    content_man_ += "<manifest>\n";
+    content_man_ += "<item id=\"ncx\" href=\"toc.ncx\" media-type=\"application/x-dtbncx+xml\" />\n";
+
+    //Add all of the chapter files
+    for(int i = 0; i < chapter_xhtml_.size(); ++i){
+        file_name = string("chapter" + itoa(i+1) + ".html");
+        content_man_ += "<item id=\"book\" href=\"";
+        content_man_ += file_name; 
+        content_man_ += "\" media-type=\"application/xhtml+xml\" />\n";
+    }    
 }
 
 //Finish the content.opf file
 //TODO very possible that the spine needs to be fixed if there are multiple chapters
 void epubCompiler::finishContentOPF(){
-    content_man_ << "</manifest>" << endl;
-    content_man_ << "<spine toc=\"ncx\">" << endl;
-    content_man_ << "    <itemref idref=\"book\" />" << endl;
-    content_man_ << "</spine>" << endl;
-    content_man_ << "</package>" << endl;
+    content_man_ += "</manifest>\n";
+    content_man_ += "<spine toc=\"ncx\">\n";
+    content_man_ += "    <itemref idref=\"book\" />\n";
+    content_man_ += "</spine>\n";
+    content_man_ += "</package>\n";
 }
 
 //Creates the table of contents file
 // TODO change to include each
 void epubCompiler::createTOC(){
-    toc_ << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << endl;
-    toc_ << "<ncx xmlns=\"http://www.daisy.org/z3986/2005/ncx/\" version=\"2005-1\">" << endl;
-    toc_ << "<head>" << endl;
-    toc_ << "<meta name=\"dtb:uid\" content=\"qwertystorm1234567890\"/>" << endl;
-    toc_ << "<meta name=\"dtb:depth\" content=\"1\"/>" << endl;
-    toc_ << "<meta name=\"dtb:totalPageCount\" content=\"0\"/>" << endl;
-    toc_ << "<meta name=\"dtb:maxPageNumber\" content=\"0\"/>" << endl;
-    toc_ << "</head>" << endl;
-    toc_ << "<docTitle>" << endl;
-    toc_ << "<text>eBook</text>" << endl;
-    toc_ << "</docTitle>" << endl;
-    toc_ << "<navMap>" << endl;
-    toc_ << "<navPoint id=\"chapter01\" playOrder=\"1\">" << endl;
-    toc_ << "<navLabel>" << endl;
-    toc_ << "<text>Chapter 1</text>" << endl; // TODO include the chapter html files
-    toc_ << "</navLabel>" << endl;
-    toc_ << "<content src=\"main.html\"/>" << endl;
-    toc_ << "</navPoint>" << endl;
-    toc_ << "</navMap>" << endl;
-    toc_ << "</ncx>" << endl;
+    toc_ += "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+    toc_ += "<ncx xmlns=\"http://www.daisy.org/z3986/2005/ncx/\" version=\"2005-1\">\n";
+    toc_ += "<head>\n";
+    toc_ += "<meta name=\"dtb:uid\" content=\"qwertystorm1234567890\"/>\n";
+    toc_ += "<meta name=\"dtb:depth\" content=\"1\"/>\n";
+    toc_ += "<meta name=\"dtb:totalPageCount\" content=\"0\"/>\n";
+    toc_ += "<meta name=\"dtb:maxPageNumber\" content=\"0\"/>\n";
+    toc_ += "</head>\n";
+    toc_ += "<docTitle>\n";
+    toc_ += "<text>eBook</text>\n";
+    toc_ += "</docTitle>\n";
+    toc_ += "<navMap>\n";
+    toc_ += "<navPoint id=\"chapter01\" playOrder=\"1\">\n";
+    toc_ += "<navLabel>\n";
+    toc_ += "<text>Chapter 1</text>\n"; // TODO include the chapter html files
+    toc_ += "</navLabel>" << endl;
+    toc_ += "<content src=\"main.html\"/>\n";
+    toc_ += "</navPoint>\n";
+    toc_ += "</navMap>\n";
+    toc_ += "</ncx>\n";
     out.close();
 }
 
