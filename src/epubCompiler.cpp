@@ -112,8 +112,8 @@ void epubCompiler::finishXHTMLs(){
     
         
         // Write all of the chapters to files
-        ofstream out((bookFolder_ + "/OEBPS/chapter" + itoa(i+1) + ".html").c_str(), ofstream::out);
-        out.write(chapter_xhtml_[i]);
+        ofstream out((bookFolder_ + "/OEBPS/chapter" + to_string(i+1) + ".html").c_str(), ofstream::out);
+        out << chapter_xhtml_[i];
 
         out.close();
     }
@@ -124,10 +124,11 @@ void epubCompiler::finishXHTMLs(){
 // There should only be two levels so I think continuously checking is not necessary
 void epubCompiler::compile(const string& rootImageSrc){
     
-    DIR * dir, subdir;
+    DIR * dir;
+    DIR * subdir;
     struct dirent * ent;
 
-    if(dir = opendir(rootImageSrc)){
+    if(dir = opendir(rootImageSrc.c_str())){
 
         // Initialize first chapter element of chapters vector
         string ch1 = string("");
@@ -136,9 +137,9 @@ void epubCompiler::compile(const string& rootImageSrc){
 
         bool is_first_chapter = true;
 
-        while(ent = readdir(dir) != NULL){
+        while((ent = readdir(dir)) != NULL){
             
-            if(subdir = opendir(ent->d_name) != NULL){
+            if((subdir = opendir(ent->d_name)) != NULL){
                 if(is_first_chapter){
                     is_first_chapter = false;
                 }else{
@@ -178,25 +179,29 @@ void epubCompiler::compile(const string& rootImageSrc){
 //Add the image source to the manifest
 void epubCompiler::addChapter(const string& imgDir, string& chapter){
     
-    DIR * dir, subdir;
+    DIR * dir;
+    DIR * subdir;
     struct dirent * ent;
 
-    if(dir = opendir(imgDir)){
+    if(dir = opendir(imgDir.c_str())){
         
         //Read in each entry of the root directory
-        while(ent = readdir(dir) != NULL){
+        while((ent = readdir(dir)) != NULL){
             locale loc;
             if(tolower(ent->d_name, loc).find(string("cover")) == std::string::npos){
             
                 //Add the image to the main body of the html
-                chapter += "<img src=\"" + ent->d_name + "\" alt=\"--\"/>\n";
+                chapter += "<img src=\"";
+                chapter += ent->d_name;
+                chapter += "\" alt=\"--\"/>\n";
 
                 //Get the file type from the name
                 size_t ext_start = ent->d_name.find(".");
                 string extension = ent->d_name.substr(ext_start, string::npos);
 
                 //Add image source to the manifest of (content.opf)
-                content_man_ += "<item id=\"img\" href=\"" + ent->d_name;
+                content_man_ += "<item id=\"img\" href=\""; 
+                content_man_ += ent->d_name;
                 content_man_ += "\" media-type=\"image/" + extension + "\"/>\n";
             }
         }
@@ -240,7 +245,7 @@ void epubCompiler::createContentOPF(){
 
     //Add all of the chapter files
     for(int i = 0; i < chapter_xhtml_.size(); ++i){
-        string file_name = string("chapter" + itoa(i+1) + ".html");
+        string file_name = string("chapter" + to_string(i+1) + ".html");
         content_man_ += "<item id=\"book\" href=\"";
         content_man_ += file_name; 
         content_man_ += "\" media-type=\"application/xhtml+xml\" />\n";
@@ -280,7 +285,6 @@ void epubCompiler::createTOC(){
     toc_ += "</navPoint>\n";
     toc_ += "</navMap>\n";
     toc_ += "</ncx>\n";
-    out.close();
 }
 
 //Finalizes all of the necessary files
