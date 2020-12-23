@@ -5,6 +5,7 @@
 #include <dirent.h>
 #include <sys/stat.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <time.h>
 #include "epubCompiler.h"
 
@@ -50,7 +51,6 @@ epubCompiler::epubCompiler(const string& bookFolder_, const string & title,
     // Create the files needed for the epub
     createMimeType();
     createMETAINF();
-    createXHTML();
     createContentOPF();
     createTOC();
 }
@@ -106,9 +106,9 @@ void epubCompiler::createXHTML(string & chapter){
 void epubCompiler::finishXHTMLs(){
     // Add finishing tags to all of the chapter strings
     for(int i = 0; i < chapter_xhtml_.size(); ++i){
-        chapter_xhtml_[i] += "</div>" << endl;
-        chapter_xhtml_[i] += "</body>" << endl;
-        chapter_xhtml_[i] += "</html>" << endl;
+        chapter_xhtml_[i] += "</div>\n";
+        chapter_xhtml_[i] += "</body>\n";
+        chapter_xhtml_[i] += "</html>\n";
     
         
         // Write all of the chapters to files
@@ -137,7 +137,7 @@ void epubCompiler::compile(const string& rootImageSrc){
         bool is_first_chapter = true;
 
         while(ent = readdir(dir) != NULL){
-            // Check that it is a subdirectory
+            
             if(subdir = opendir(ent->d_name) != NULL){
                 if(is_first_chapter){
                     is_first_chapter = false;
@@ -151,14 +151,17 @@ void epubCompiler::compile(const string& rootImageSrc){
                 addChapter(ent->d_name, chapter_xhtml_[chapter_xhtml_.size() - 1]);
 
             }else{
-                // Entry is a file
+                // Entry in the root image directory is a file
                 
                 // Check if its a cover image
                 locale loc;
                 if(tolower(ent->d_name, loc).find(string("cover")) != std::string::npos){
-                    //TODO add cover image
+                       //TODO add cover image
+                       
+                
                 }else{
-                    addChapter(, chapter_xhtml_[chapter_xhtml_.size() - 1]);
+                    //TODO 
+                    //addChapter(, chapter_xhtml_[chapter_xhtml_.size() - 1]);
                 }              
             }
         }
@@ -180,6 +183,7 @@ void epubCompiler::addChapter(const string& imgDir, string& chapter){
 
     if(dir = opendir(imgDir)){
         
+        //Read in each entry of the root directory
         while(ent = readdir(dir) != NULL){
             locale loc;
             if(tolower(ent->d_name, loc).find(string("cover")) == std::string::npos){
@@ -220,20 +224,23 @@ void epubCompiler::createContentOPF(){
     content_man_ += "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
     content_man_ += "<package xmlns=\"http://www.idpf.org/2007/opf\" unique-identifier=\"BookID\" version=\"2.0\" >\n";
     content_man_ += "<metadata xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:opf=\"http://www.idpf.org/2007/opf\">\n";
-    content_man_ += "<dc:title>" << title_ << "</dc:title>\n";
+    content_man_ += "<dc:title>"; 
+    content_man_ += title_;
+    content_man_ += "</dc:title>\n";
     content_man_ += "<dc:creator opf:role=\"aut\">Yoda47</dc:creator>\n";
     content_man_ += "<dc:language>en-US</dc:language>\n"; 
     content_man_ += "<dc:rights>Imgur</dc:rights>\n";
     content_man_ += "<dc:publisher> Imgur website</dc:publisher>\n";
     content_man_ += "<dc:identifier id=\"BookID\" opf:scheme=\"UUID\">";
-    content_man_ += uuid << "</dc:identifier>\n";
+    content_man_ += uuid;
+    content_man_ += "</dc:identifier>\n";
     content_man_ += "</metadata>\n";
     content_man_ += "<manifest>\n";
     content_man_ += "<item id=\"ncx\" href=\"toc.ncx\" media-type=\"application/x-dtbncx+xml\" />\n";
 
     //Add all of the chapter files
     for(int i = 0; i < chapter_xhtml_.size(); ++i){
-        file_name = string("chapter" + itoa(i+1) + ".html");
+        string file_name = string("chapter" + itoa(i+1) + ".html");
         content_man_ += "<item id=\"book\" href=\"";
         content_man_ += file_name; 
         content_man_ += "\" media-type=\"application/xhtml+xml\" />\n";
@@ -251,7 +258,7 @@ void epubCompiler::finishContentOPF(){
 }
 
 //Creates the table of contents file
-// TODO change to include each
+// TODO change to include each chapter file
 void epubCompiler::createTOC(){
     toc_ += "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
     toc_ += "<ncx xmlns=\"http://www.daisy.org/z3986/2005/ncx/\" version=\"2005-1\">\n";
@@ -268,7 +275,7 @@ void epubCompiler::createTOC(){
     toc_ += "<navPoint id=\"chapter01\" playOrder=\"1\">\n";
     toc_ += "<navLabel>\n";
     toc_ += "<text>Chapter 1</text>\n"; // TODO include the chapter html files
-    toc_ += "</navLabel>" << endl;
+    toc_ += "</navLabel>\n";
     toc_ += "<content src=\"main.html\"/>\n";
     toc_ += "</navPoint>\n";
     toc_ += "</navMap>\n";
@@ -278,6 +285,6 @@ void epubCompiler::createTOC(){
 
 //Finalizes all of the necessary files
 epubCompiler::~epubCompiler(){
-    finishXHTML();
+    finishXHTMLs();
     finishContentOPF();
 }

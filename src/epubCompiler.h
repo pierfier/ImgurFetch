@@ -1,6 +1,7 @@
 #include<fstream>
 #include<iostream>
 #include<string>
+#include<vector>
 
 using namespace std;
 
@@ -23,11 +24,13 @@ class epubCompiler{
         //Starts the creation of the files
         void createMimeType();
         void createMETAINF();
-        void createXHTML();
-        void finishXHTML();
+        void createXHTML(string & chapter);
+        void finishXHTMLs();
         void createTOC();
         void createContentOPF();
         void finishContentOPF();
+
+        void addChapter(const string & imgDir, string & chapter);
 
         //Local folder used to compose the book
         string bookFolder_;
