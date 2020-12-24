@@ -32,6 +32,18 @@ class epubCompiler{
 
         void addChapter(const string & imgDir, string & chapter);
 
+        // Returns passed string to lowercase
+        string strToLower(string str){    
+            string temp = string();    
+                   
+            for(int i = 0; i < str.length(); ++i){    
+                temp += tolower(str[i]);    
+            }    
+                       
+            return temp;    
+        }
+
+
         //Local folder used to compose the book
         string bookFolder_;
         

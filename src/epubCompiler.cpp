@@ -1,7 +1,6 @@
 #include <string>
 #include <iostream>
 #include <fstream>
-#include <locale>
 #include <dirent.h>
 #include <sys/stat.h>
 #include <stdlib.h>
@@ -130,13 +129,14 @@ void epubCompiler::compile(const string& rootImageSrc){
 
     if(dir = opendir(rootImageSrc.c_str())){
 
-        // Initialize first chapter element of chapters vector
+        // Initialize the first chapter element
         string ch1 = string("");
         createXHTML(ch1);
         chapter_xhtml_.push_back(ch1);
 
         bool is_first_chapter = true;
-
+        
+        // Read each directory item in dir (root directory which is the function's argument)
         while((ent = readdir(dir)) != NULL){
             
             if((subdir = opendir(ent->d_name)) != NULL){
@@ -154,9 +154,12 @@ void epubCompiler::compile(const string& rootImageSrc){
             }else{
                 // Entry in the root image directory is a file
                 
+                //DEBUG Entering single folder
+                cout << "Entered root directory" << endl;
+
+
                 // Check if its a cover image
-                locale loc;
-                if(tolower(ent->d_name, loc).find(string("cover")) != std::string::npos){
+                if(strToLower(ent->d_name).find(string("cover")) != std::string::npos){
                        //TODO add cover image
                        
                 
@@ -187,8 +190,7 @@ void epubCompiler::addChapter(const string& imgDir, string& chapter){
         
         //Read in each entry of the root directory
         while((ent = readdir(dir)) != NULL){
-            locale loc;
-            if(tolower(ent->d_name, loc).find(string("cover")) == std::string::npos){
+            if(strToLower(ent->d_name).find(string("cover")) == std::string::npos){
             
                 //Add the image to the main body of the html
                 chapter += "<img src=\"";
@@ -196,8 +198,8 @@ void epubCompiler::addChapter(const string& imgDir, string& chapter){
                 chapter += "\" alt=\"--\"/>\n";
 
                 //Get the file type from the name
-                size_t ext_start = ent->d_name.find(".");
-                string extension = ent->d_name.substr(ext_start, string::npos);
+                size_t ext_start = string(ent->d_name).find(".");
+                string extension = string(ent->d_name).substr(ext_start, string::npos);
 
                 //Add image source to the manifest of (content.opf)
                 content_man_ += "<item id=\"img\" href=\""; 
