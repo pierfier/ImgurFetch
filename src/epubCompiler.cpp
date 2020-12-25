@@ -150,7 +150,7 @@ void epubCompiler::compileImages(const string& rootImageSrc){
         
         // Check if root directory has other directories
         bool has_subdirs = false;
-        while((ent = readdir(first_pass)) != NULL){
+        while((ent = readdir(dir)) != NULL){
             //Skip the current and upstream directories
             if(strcmp(ent->d_name, ".") == 0 || strcmp(ent->d_name, "..") == 0){
                 continue;
@@ -159,6 +159,7 @@ void epubCompiler::compileImages(const string& rootImageSrc){
             //There is a subdirectory
             if((subdir = opendir(ent->d_name)) != NULL){
                 has_subdirs = true;
+                closedir(subdir);
             }
 
             // Check if there is a cover image
@@ -172,7 +173,7 @@ void epubCompiler::compileImages(const string& rootImageSrc){
         closedir(dir);
         
         if(has_subdirs){
-            // Loop through each subdirectory and store the chapters that way    
+            // Loop through each subdirectory and create new chapter content files  
             dir = opendir(rootImageSrc.c_str());
             while((ent = readdir(dir)) != NULL){
                 
@@ -185,7 +186,7 @@ void epubCompiler::compileImages(const string& rootImageSrc){
                 string new_chap = string("");
                 startXHTML(new_chap);
                 chapter_xhtml_.push_back(new_chap);
-                addChapter(rootImageSrc + "/" string(), chapter_xhtml_[chapter_xhtml_.size() - 1]);
+                addChapter(rootImageSrc + "/" + string(ent->d_name), chapter_xhtml_[chapter_xhtml_.size() - 1]);
             }
             closedir(dir);
         }else{
@@ -239,6 +240,7 @@ void epubCompiler::addChapter(const string& imgDir, string& chapter){
     }else{
         cout << "Error reading directory " << dir << endl;
     }
+    closedir(dir);
 }   
 
 //This method adds to Content.opf string up until
