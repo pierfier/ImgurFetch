@@ -49,6 +49,7 @@ epubCompiler::epubCompiler(const string& bookFolder_, const string & title,
     }
 
     // Create the files needed for the epub
+    // TODO This stuff should not be compiled until after all of the images are listed and compiled
     createMimeType();
     createMETAINF();
     createContentOPF();
@@ -93,8 +94,7 @@ void epubCompiler::createMETAINF(){
 
 //Adds the header information to any xhtml file
 //Commonly used for the chapter file, but also with creating the cover file 
-void epubCompiler::createXHTML(string & xhtml_file){
-
+void epubCompiler::startXHTML(string & xhtml_file){
     // Add to single xhtml
     xhtml_file += "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     xhtml_file += "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\">\n";
@@ -111,38 +111,37 @@ void epubCompiler::createCoverHTML(string cover_image_file){
 
     cover_html += "<img src=\"";
     cover_html += cover_image_file;
-    cover_html += "images/over.png\" alt=\"Title page\"/>\n";
+    cover_html += "\" alt=\"Title page\"/>\n";
     cover_html += "</div>\n";
     cover_html += "</body>\n";
     cover_html += "</html>\n";
 
     // Save contents to cover file
-    ofstream out((bookFolder_ + "cover.html").c_str(), ofstream::out);
+    ofstream out((bookFolder_ + "/cover.html").c_str(), ofstream::out);
     out << cover_html;
     out.close();
 }
 
+// Copies the image to the images folder of the book
+// Takes the full path, including file name as the argument
+void epubCompiler::transferImageToBookDir(string image_path){
+    //TODO implement this method
+}
+
 //Finish all of the chapter xhtml files
-void epubCompiler::finishXHTMLs(){
+void epubCompiler::finishXHTMLStrings(){
     // Add finishing tags to all of the chapter strings
     for(int i = 0; i < chapter_xhtml_.size(); ++i){
         chapter_xhtml_[i] += "</div>\n";
         chapter_xhtml_[i] += "</body>\n";
-        chapter_xhtml_[i] += "</html>\n";
-    
-        
-        // Write all of the chapters to files
-        ofstream out((bookFolder_ + "/OEBPS/chapter" + to_string(i+1) + ".html").c_str(), ofstream::out);
-        out << chapter_xhtml_[i];
-
-        out.close();
+        chapter_xhtml_[i] += "</html>\n";   
     }
 
 }
 
 // Either try to find images in this folder, or search for individual chapter subfolders
 // There should only be two levels so I think continuously checking is not necessary
-void epubCompiler::compile(const string& rootImageSrc){
+void epubCompiler::compileImages(const string& rootImageSrc){
     
     DIR * dir;
     DIR * subdir;
@@ -187,14 +186,13 @@ void epubCompiler::compile(const string& rootImageSrc){
             }else{
                 // Entry in the root image directory is a file
                 // DEBUG
-                cout << "Starting the root directory\n";
-                cout << "Current entry is " << ent->d_name;
+                cout << "Current entry is " << ent->d_name << "\n";
 
                 // Check if its a cover image
                 if(strToLower(ent->d_name).find(string("cover")) != std::string::npos){
                     //DEBUG
                     cout << "Found cover image\n";
-                    cout << "Cover name: " << ent->d_name;
+                    cout << "Cover name: " << ent->d_name << "\n";
                     createCoverHTML(string(ent->d_name)); //TODO should I include the folder here??
                     
                 }else{
@@ -204,14 +202,9 @@ void epubCompiler::compile(const string& rootImageSrc){
             }
         }
 
-        //DEBUG
-        cout << "End of loop";
-
     }else{
         cout << "Directory " << rootImageSrc << " does not exist\n";
     }
-    
-
 }
 
 //Folder directory must only contain image files
@@ -252,7 +245,7 @@ void epubCompiler::addChapter(const string& imgDir, string& chapter){
 
 //This method adds to Content.opf string up until
 //the middle of the manifest where images are being referenced
-void epubCompiler::createContentOPF(){
+void epubCompiler::startContentOPF(){
 
     //Generate a random UUID
     string charset = string("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
@@ -293,7 +286,7 @@ void epubCompiler::createContentOPF(){
 
 //Finish the content.opf file
 //TODO very possible that the spine needs to be fixed if there are multiple chapters
-void epubCompiler::finishContentOPF(){
+void epubCompiler::finishContentOPFString(){
     content_man_ += "</manifest>\n";
     content_man_ += "<spine toc=\"ncx\">\n";
     content_man_ += "    <itemref idref=\"book\" />\n";
@@ -303,7 +296,7 @@ void epubCompiler::finishContentOPF(){
 
 //Creates the table of contents file
 // TODO change to include each chapter file
-void epubCompiler::createTOC(){
+void epubCompiler::startTOC(){
     toc_ += "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
     toc_ += "<ncx xmlns=\"http://www.daisy.org/z3986/2005/ncx/\" version=\"2005-1\">\n";
     toc_ += "<head>\n";
@@ -326,8 +319,16 @@ void epubCompiler::createTOC(){
     toc_ += "</ncx>\n";
 }
 
-//Finalizes all of the necessary files
-epubCompiler::~epubCompiler(){
-    finishXHTMLs();
-    finishContentOPF();
+// Write all of the content strings to the respective files
+void epubCompiler::writeAllFiles(){
+    // Write all of the chapter xhmtl files
+    for(int i =0; i < chapter_xhtml_.size(); ++i){    
+        ofstream out((bookFolder_ + "/OEBPS/chapter" + to_string(i+1) + ".html").c_str(), ofstream::out);
+        out << chapter_xhtml_[i];
+
+        out.close();
+    }
+    
+
+
 }

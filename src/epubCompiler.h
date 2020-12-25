@@ -17,7 +17,7 @@ class epubCompiler{
         void addImage(const string& imgDir, string& chapter_html);
         
         // Entry point for starting the build of the epub
-        void compile(const string& rootImageSrc);
+        void compileImages(const string& rootImageSrc);
 
         ~epubCompiler();
     private:
