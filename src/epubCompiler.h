@@ -24,12 +24,12 @@ class epubCompiler{
         //Starts the creation of the files
         void createMimeType();
         void createMETAINF();
-        void createXHTML(string & chapter);
-        void finishXHTMLs();
+        void createCoverHTML(string cover_image_file);
         void createTOC();
         void createContentOPF();
+        void createXHTML(string & chapter);
+        void finishXHTMLs();
         void finishContentOPF();
-
         void addChapter(const string & imgDir, string & chapter);
 
         // Returns passed string to lowercase

@@ -1,4 +1,5 @@
 #include <string>
+#include <string.h>
 #include <iostream>
 #include <fstream>
 #include <dirent.h>
@@ -90,15 +91,35 @@ void epubCompiler::createMETAINF(){
     out.close();
 }
 
-//Adds the header files to xhtml chapter file
-void epubCompiler::createXHTML(string & chapter){
+//Adds the header information to any xhtml file
+//Commonly used for the chapter file, but also with creating the cover file 
+void epubCompiler::createXHTML(string & xhtml_file){
 
     // Add to single xhtml
-    chapter += "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
-    chapter += "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\">\n";
-    chapter += "<head>\n";
-    chapter += "<title>Book</title>\n";
-    chapter += "</head>\n<body>\n<div>\n";
+    xhtml_file += "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
+    xhtml_file += "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\">\n";
+    xhtml_file += "<head>\n";
+    xhtml_file += "<title>Book</title>\n";
+    xhtml_file += "</head>\n<body>\n<div>\n";
+}
+
+//Create the cover html file with the cover image
+void epubCompiler::createCoverHTML(string cover_image_file){
+    // Start up the header information
+    string cover_html = string();
+    createXHTML(cover_html);
+
+    cover_html += "<img src=\"";
+    cover_html += cover_image_file;
+    cover_html += "images/over.png\" alt=\"Title page\"/>\n";
+    cover_html += "</div>\n";
+    cover_html += "</body>\n";
+    cover_html += "</html>\n";
+
+    // Save contents to cover file
+    ofstream out((bookFolder_ + "cover.html").c_str(), ofstream::out);
+    out << cover_html;
+    out.close();
 }
 
 //Finish all of the chapter xhtml files
@@ -139,6 +160,14 @@ void epubCompiler::compile(const string& rootImageSrc){
         // Read each directory item in dir (root directory which is the function's argument)
         while((ent = readdir(dir)) != NULL){
             
+            //Check that the directory is not the current or previous
+            if(strcmp(ent->d_name, ".") == 0 || strcmp(ent->d_name, "..") == 0){
+                continue;
+            }
+
+            //DEBUG
+            cout << "Initial entry name: " << ent->d_name << endl;
+
             if((subdir = opendir(ent->d_name)) != NULL){
                 if(is_first_chapter){
                     is_first_chapter = false;
@@ -147,28 +176,36 @@ void epubCompiler::compile(const string& rootImageSrc){
                     createXHTML(new_chap);
                     chapter_xhtml_.push_back(new_chap);
                 }
+                
+                //DEBUG
+                cout << "\n-- Entered Forbidden Zone ---\n";
+                cout << "Entry name is" << ent->d_name << "\n\n";
 
                 // Read in the directory and start adding the images into the current chapter this chapter
                 addChapter(ent->d_name, chapter_xhtml_[chapter_xhtml_.size() - 1]);
 
             }else{
                 // Entry in the root image directory is a file
-                
-                //DEBUG Entering single folder
-                cout << "Entered root directory" << endl;
-
+                // DEBUG
+                cout << "Starting the root directory\n";
+                cout << "Current entry is " << ent->d_name;
 
                 // Check if its a cover image
                 if(strToLower(ent->d_name).find(string("cover")) != std::string::npos){
-                       //TODO add cover image
-                       
-                
+                    //DEBUG
+                    cout << "Found cover image\n";
+                    cout << "Cover name: " << ent->d_name;
+                    createCoverHTML(string(ent->d_name)); //TODO should I include the folder here??
+                    
                 }else{
                     //TODO 
                     //addChapter(, chapter_xhtml_[chapter_xhtml_.size() - 1]);
                 }              
             }
         }
+
+        //DEBUG
+        cout << "End of loop";
 
     }else{
         cout << "Directory " << rootImageSrc << " does not exist\n";
