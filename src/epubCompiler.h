@@ -13,24 +13,25 @@ class epubCompiler{
     public:     
         epubCompiler(const string& bookFolder, const string& title, const string& author);
         
-        // Add the image information to the chapter xhmtl and the manifest
-        void addImage(const string& imgDir, string& chapter_html);
-        
         // Entry point for starting the build of the epub
         void compileImages(const string& rootImageSrc);
 
-        ~epubCompiler();
-    private:
         //Starts the creation of the files
         void createMimeType();
         void createMETAINF();
         void createCoverHTML(string cover_image_file);
-        void createTOC();
-        void createContentOPF();
-        void createXHTML(string & chapter);
-        void finishXHTMLs();
-        void finishContentOPF();
+        
+        void startTOC();
+        void startContentOPF();
+        void startXHTML(string & chapter);
+        
+        void finishXHTMLStrings();
+        void finishContentOPFString();
+        
+        void transferImageToBookDir(string image_path);
+
         void addChapter(const string & imgDir, string & chapter);
+        void writeAllFiles();
 
         // Returns passed string to lowercase
         string strToLower(string str){    
@@ -42,7 +43,6 @@ class epubCompiler{
                        
             return temp;    
         }
-
 
         //Local folder used to compose the book
         string bookFolder_;

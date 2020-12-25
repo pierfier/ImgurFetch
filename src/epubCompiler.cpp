@@ -47,13 +47,6 @@ epubCompiler::epubCompiler(const string& bookFolder_, const string & title,
     }else{
         mkdir((bookFolder_ + "/OEBPS/images").c_str(), 0777);
     }
-
-    // Create the files needed for the epub
-    // TODO This stuff should not be compiled until after all of the images are listed and compiled
-    createMimeType();
-    createMETAINF();
-    createContentOPF();
-    createTOC();
 }
 
 //Creates mimetype file with a single line
@@ -107,7 +100,7 @@ void epubCompiler::startXHTML(string & xhtml_file){
 void epubCompiler::createCoverHTML(string cover_image_file){
     // Start up the header information
     string cover_html = string();
-    createXHTML(cover_html);
+    startXHTML(cover_html);
 
     cover_html += "<img src=\"";
     cover_html += cover_image_file;
@@ -136,7 +129,6 @@ void epubCompiler::finishXHTMLStrings(){
         chapter_xhtml_[i] += "</body>\n";
         chapter_xhtml_[i] += "</html>\n";   
     }
-
 }
 
 // Either try to find images in this folder, or search for individual chapter subfolders
@@ -151,55 +143,54 @@ void epubCompiler::compileImages(const string& rootImageSrc){
 
         // Initialize the first chapter element
         string ch1 = string("");
-        createXHTML(ch1);
+        startXHTML(ch1);
         chapter_xhtml_.push_back(ch1);
 
         bool is_first_chapter = true;
         
-        // Read each directory item in dir (root directory which is the function's argument)
-        while((ent = readdir(dir)) != NULL){
-            
-            //Check that the directory is not the current or previous
+        // Check if root directory has other directories
+        bool has_subdirs = false;
+        while((ent = readdir(first_pass)) != NULL){
+            //Skip the current and upstream directories
             if(strcmp(ent->d_name, ".") == 0 || strcmp(ent->d_name, "..") == 0){
                 continue;
             }
 
-            //DEBUG
-            cout << "Initial entry name: " << ent->d_name << endl;
-
+            //There is a subdirectory
             if((subdir = opendir(ent->d_name)) != NULL){
-                if(is_first_chapter){
-                    is_first_chapter = false;
-                }else{
-                    string new_chap = string("");
-                    createXHTML(new_chap);
-                    chapter_xhtml_.push_back(new_chap);
+                has_subdirs = true;
+            }
+
+            // Check if there is a cover image
+            if(string(strToLower(ent->d_name)).find(string("cover")) != std::string::npos){
+                //DEBUG
+                cout << "Found cover image\n";
+                cout << "Cover name: " << ent->d_name << "\n";
+                createCoverHTML("images/" + string(ent->d_name));
+            }
+        }
+        closedir(dir);
+        
+        if(has_subdirs){
+            // Loop through each subdirectory and store the chapters that way    
+            dir = opendir(rootImageSrc.c_str());
+            while((ent = readdir(dir)) != NULL){
+                
+                //Skip the current and upstream directories
+                if(strcmp(ent->d_name, ".") == 0 || strcmp(ent->d_name, "..") == 0){
+                    continue;
                 }
                 
-                //DEBUG
-                cout << "\n-- Entered Forbidden Zone ---\n";
-                cout << "Entry name is" << ent->d_name << "\n\n";
-
-                // Read in the directory and start adding the images into the current chapter this chapter
-                addChapter(ent->d_name, chapter_xhtml_[chapter_xhtml_.size() - 1]);
-
-            }else{
-                // Entry in the root image directory is a file
-                // DEBUG
-                cout << "Current entry is " << ent->d_name << "\n";
-
-                // Check if its a cover image
-                if(strToLower(ent->d_name).find(string("cover")) != std::string::npos){
-                    //DEBUG
-                    cout << "Found cover image\n";
-                    cout << "Cover name: " << ent->d_name << "\n";
-                    createCoverHTML(string(ent->d_name)); //TODO should I include the folder here??
-                    
-                }else{
-                    //TODO 
-                    //addChapter(, chapter_xhtml_[chapter_xhtml_.size() - 1]);
-                }              
+                // Add this subdirectory files to a new chapter contents string
+                string new_chap = string("");
+                startXHTML(new_chap);
+                chapter_xhtml_.push_back(new_chap);
+                addChapter(rootImageSrc + "/" string(), chapter_xhtml_[chapter_xhtml_.size() - 1]);
             }
+            closedir(dir);
+        }else{
+            // Add all images in root directory into single chapter html    
+            addChapter(rootImageSrc, chapter_xhtml_[0]);
         }
 
     }else{
@@ -213,13 +204,20 @@ void epubCompiler::compileImages(const string& rootImageSrc){
 void epubCompiler::addChapter(const string& imgDir, string& chapter){
     
     DIR * dir;
-    DIR * subdir;
     struct dirent * ent;
 
     if(dir = opendir(imgDir.c_str())){
-        
+        //TODO need to sort all of the images    
+        vector<string> img_files;
+
+
         //Read in each entry of the root directory
         while((ent = readdir(dir)) != NULL){
+            //Skip the current and upstream directories
+            if(strcmp(ent->d_name, ".") == 0 || strcmp(ent->d_name, "..") == 0){
+                continue;
+            }
+
             if(strToLower(ent->d_name).find(string("cover")) == std::string::npos){
             
                 //Add the image to the main body of the html

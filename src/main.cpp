@@ -126,7 +126,10 @@ int main(int argc, char *argv[]){
             epubCompiler eCompiler(bookDest, title, author);
         
             // Compile the epub with the root image source
-            eCompiler.compile(imageSrc);
+            eCompiler.compileImages(imageSrc);
+            eCompiler.finishXHTMLStrings();
+            eCompiler.writeAllFiles();
+
 
         }else if(string(argv[i]) == "--help"){
             cout << "Usage:" << endl;
