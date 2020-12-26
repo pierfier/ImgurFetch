@@ -1,3 +1,3 @@
 make
 #./imgurfetch -g key.txt 3lV6s
-./imgurfetch -c config
+valgrind --leak-check=full --track-origins=yes ./imgurfetch -c config
