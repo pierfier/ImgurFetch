@@ -1,6 +1,7 @@
 #include <string>
 #include <string.h>
 #include <iostream>
+#include <algorithm>
 #include <fstream>
 #include <dirent.h>
 #include <sys/stat.h>
@@ -207,32 +208,43 @@ void epubCompiler::addChapter(const string& imgDir, string& chapter){
     DIR * dir;
     struct dirent * ent;
 
-    if(dir = opendir(imgDir.c_str())){
-        //TODO need to sort all of the images    
+    if((dir = opendir(imgDir.c_str())) != NULL){
         vector<string> img_files;
-
-
-        //Read in each entry of the root directory
         while((ent = readdir(dir)) != NULL){
             //Skip the current and upstream directories
             if(strcmp(ent->d_name, ".") == 0 || strcmp(ent->d_name, "..") == 0){
                 continue;
             }
 
-            if(strToLower(ent->d_name).find(string("cover")) == std::string::npos){
+            img_files.push_back(ent->d_name);
+        }
+        //Sort the file names
+        sort(img_files.begin(), img_files.end(), compFileName);
+        
+        //Reset directory pointer
+        closedir(dir);
+
+        //Read in each entry of the root directory
+        for(vector<string>::iterator it = img_files.begin(); it != img_files.end(); ++it){
+            //Skip the current and upstream directories
+            if(strcmp((*it).c_str(), ".") == 0 || strcmp((*it).c_str(), "..") == 0){
+                continue;
+            }
+
+            if(strToLower(*it).find(string("cover")) == std::string::npos){
             
                 //Add the image to the main body of the html
                 chapter += "<img src=\"";
-                chapter += ent->d_name;
+                chapter += *it;
                 chapter += "\" alt=\"--\"/>\n";
 
                 //Get the file type from the name
-                size_t ext_start = string(ent->d_name).find(".");
-                string extension = string(ent->d_name).substr(ext_start, string::npos);
+                size_t ext_start = string(*it).find(".");
+                string extension = string(*it).substr(ext_start, string::npos);
 
                 //Add image source to the manifest of (content.opf)
                 content_man_ += "<item id=\"img\" href=\""; 
-                content_man_ += ent->d_name;
+                content_man_ += *it;
                 content_man_ += "\" media-type=\"image/" + extension + "\"/>\n";
             }
         }
@@ -240,7 +252,6 @@ void epubCompiler::addChapter(const string& imgDir, string& chapter){
     }else{
         cout << "Error reading directory " << dir << endl;
     }
-    closedir(dir);
 }   
 
 //This method adds to Content.opf string up until

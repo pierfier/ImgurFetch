@@ -43,6 +43,26 @@ class epubCompiler{
                        
             return temp;    
         }
+        
+        // Compare image file names so that they are ordered by numbers
+        bool static compFileName(string i, string j){
+            i = i.substr(0, i.find("."));
+            j = j.substr(0, j.find("."));
+            
+            // Prefix is a number
+            long int num1;
+            long int num2;
+            num1 = strtol(i.c_str(), NULL, 10);
+            num2 = strtol(j.c_str(), NULL, 10);
+ 
+            if(num1 == 0 || num2 == 0){
+                // Contains characters
+                return i < j;
+            }else{
+                // Number comparisons
+                return num1 < num2;
+            }
+        }
 
         //Local folder used to compose the book
         string bookFolder_;
