@@ -28,7 +28,7 @@ class epubCompiler{
         void finishXHTMLStrings();
         void finishContentOPFString();
         
-        void transferImageToBookDir(string image_path);
+        void transferImagesToBookDir(string image_path);
 
         void addChapter(const string & imgDir, string & chapter);
         void writeAllFiles();

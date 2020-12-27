@@ -7,11 +7,12 @@ Main Program
 #3 [Non-essential]: Have a way for the program to add onto the images list without overwritting already downloaded images
 #4 [Low]: Reference the epub tutorial website
 #5 [Medium]: Need to include table of contents file
-#6 [High]: Add cover image
+#6 [High]: Add cover image, it maybe possible to do this in the metadata tags
 #7 [Low]: Change the parsing of options as -gc instead of -g -c
 #8 [Medium]: Change the strategy of epubCompilier by first writing to strings and then write to the files at the end by a close function
 #9 [Low]: Setup as an AUR Build package
 
 UI Front end
 ============
-#1 [Low]: Connect frontend with backend
+#1 [Low]: Connect frontend with backend with Flask
+#2 [Low]: Use google books API to directly upload the finished epub to a users google library

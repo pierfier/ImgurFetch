@@ -48,6 +48,9 @@ epubCompiler::epubCompiler(const string& bookFolder_, const string & title,
     }else{
         mkdir((bookFolder_ + "/OEBPS/images").c_str(), 0777);
     }
+
+    // Write the headers of the content.opf file
+    startContentOPF();
 }
 
 //Creates mimetype file with a single line
@@ -93,7 +96,9 @@ void epubCompiler::startXHTML(string & xhtml_file){
     xhtml_file += "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     xhtml_file += "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\">\n";
     xhtml_file += "<head>\n";
-    xhtml_file += "<title>Book</title>\n";
+    xhtml_file += "<title>";
+    xhtml_file += title_;
+    xhtml_file += "</title>\n";
     xhtml_file += "</head>\n<body>\n<div>\n";
 }
 
@@ -118,7 +123,7 @@ void epubCompiler::createCoverHTML(string cover_image_file){
 
 // Copies the image to the images folder of the book
 // Takes the full path, including file name as the argument
-void epubCompiler::transferImageToBookDir(string image_path){
+void epubCompiler::transferImagesToBookDir(string images_path){
     //TODO implement this method
 }
 
@@ -194,6 +199,14 @@ void epubCompiler::compileImages(const string& rootImageSrc){
             // Add all images in root directory into single chapter html    
             addChapter(rootImageSrc, chapter_xhtml_[0]);
         }
+        
+        // Add all chapter file references to manifest
+        for(int i = 0; i < chapter_xhtml_.size(); ++i){
+            string file_name = string("chapter" + to_string(i+1) + ".html");
+            content_man_ += "<item id=\"book\" href=\"";
+            content_man_ += file_name; 
+            content_man_ += "\" media-type=\"application/xhtml+xml\" />\n";
+        }
 
     }else{
         cout << "Directory " << rootImageSrc << " does not exist\n";
@@ -248,7 +261,6 @@ void epubCompiler::addChapter(const string& imgDir, string& chapter){
                 content_man_ += "\" media-type=\"image/" + extension + "\"/>\n";
             }
         }
-
     }else{
         cout << "Error reading directory " << dir << endl;
     }
@@ -275,7 +287,9 @@ void epubCompiler::startContentOPF(){
     content_man_ += "<dc:title>"; 
     content_man_ += title_;
     content_man_ += "</dc:title>\n";
-    content_man_ += "<dc:creator opf:role=\"aut\">Yoda47</dc:creator>\n";
+    content_man_ += "<dc:creator opf:role=\"aut\">";
+    content_man_ += author_;
+    content_man_ += "</dc:creator>\n";
     content_man_ += "<dc:language>en-US</dc:language>\n"; 
     content_man_ += "<dc:rights>Imgur</dc:rights>\n";
     content_man_ += "<dc:publisher> Imgur website</dc:publisher>\n";
@@ -285,14 +299,6 @@ void epubCompiler::startContentOPF(){
     content_man_ += "</metadata>\n";
     content_man_ += "<manifest>\n";
     content_man_ += "<item id=\"ncx\" href=\"toc.ncx\" media-type=\"application/x-dtbncx+xml\" />\n";
-
-    //Add all of the chapter files
-    for(int i = 0; i < chapter_xhtml_.size(); ++i){
-        string file_name = string("chapter" + to_string(i+1) + ".html");
-        content_man_ += "<item id=\"book\" href=\"";
-        content_man_ += file_name; 
-        content_man_ += "\" media-type=\"application/xhtml+xml\" />\n";
-    }    
 }
 
 //Finish the content.opf file
@@ -300,7 +306,10 @@ void epubCompiler::startContentOPF(){
 void epubCompiler::finishContentOPFString(){
     content_man_ += "</manifest>\n";
     content_man_ += "<spine toc=\"ncx\">\n";
-    content_man_ += "    <itemref idref=\"book\" />\n";
+    content_man_ += "<itemref idref=\"cover\" linear=\"no\"/>\n";
+    content_man_ += "<itemref idref=\"book\" />\n";
+    
+
     content_man_ += "</spine>\n";
     content_man_ += "</package>\n";
 }
@@ -340,6 +349,11 @@ void epubCompiler::writeAllFiles(){
         out.close();
     }
     
+    //-- Write to content.opf
+    finishContentOPFString();
 
+    ofstream out(bookFolder_ + "/OEBPS/content.opf", ofstream::out);
+    out << content_man_;
+    out.close();
 
 }
