@@ -102,27 +102,6 @@ void epubCompiler::startXHTML(string & xhtml_file){
     xhtml_file += "</head>\n<body>\n<div>\n";
 }
 
-//Create the cover html file with the cover image
-void epubCompiler::createCoverHTML(string cover_image_file){
-    // Start up the header information
-    string cover_html = string();
-    startXHTML(cover_html);
-
-    cover_html += "<img src=\"";
-    cover_html += cover_image_file;
-    cover_html += "\" alt=\"Title page\"/>\n";
-    cover_html += "</div>\n";
-    cover_html += "</body>\n";
-    cover_html += "</html>\n";
-
-    // Save contents to cover file
-    ofstream out((bookFolder_ + "/cover.html").c_str(), ofstream::out);
-    out << cover_html;
-    out.close();
-    
-    // Add cover reference to content.opf manifest
-    content_man_ += "";
-}
 
 // Copies the image to the images folder of the book
 // Takes the full path, including file name as the argument
@@ -176,7 +155,6 @@ void epubCompiler::compileImages(const string& rootImageSrc){
                 //DEBUG
                 cout << "Found cover image\n";
                 cout << "Cover name: " << ent->d_name << "\n";
-                createCoverHTML("images/" + string(ent->d_name));
             }
         }
         closedir(dir);
@@ -257,7 +235,10 @@ void epubCompiler::addChapter(const string& imgDir, string& chapter){
 
                 //Get the file type from the name
                 size_t ext_start = string(*it).find(".");
-                string extension = string(*it).substr(ext_start, string::npos);
+                string extension = string(*it).substr(ext_start + 1, string::npos);
+                if(extension.compare("jpg" == 0)){
+                    extension = string("jpeg");
+                }
 
                 //Add image source to the manifest of (content.opf)
                 content_man_ += "<item id=\"img";
@@ -300,8 +281,10 @@ void epubCompiler::startContentOPF(){
     content_man_ += "<dc:rights>Imgur</dc:rights>\n";
     content_man_ += "<dc:publisher> Imgur website</dc:publisher>\n";
     content_man_ += "<dc:identifier id=\"BookID\" opf:scheme=\"UUID\">";
+    content_man_ += "urn:uuid:";
     content_man_ += uuid;
     content_man_ += "</dc:identifier>\n";
+    content_man_ += "meta name=\"cover\" content=\"cover-image\"";
     content_man_ += "</metadata>\n";
     content_man_ += "<manifest>\n";
     content_man_ += "<item id=\"ncx\" href=\"toc.ncx\" media-type=\"application/x-dtbncx+xml\" />\n";
@@ -335,14 +318,25 @@ void epubCompiler::createTOC(){
     toc_ += "<text>eBook</text>\n";
     toc_ += "</docTitle>\n";
     toc_ += "<navMap>\n";
-    toc_ += "<navPoint id=\"chapter01\" playOrder=\"1\">\n";
-    toc_ += "<navLabel>\n";
-
-    toc_ += "<text>Chapter 1</text>\n"; // TODO include the chapter html files
     
-    toc_ += "</navLabel>\n";
-    toc_ += "<content src=\"main.html\"/>\n";
-    toc_ += "</navPoint>\n";
+    // Add all of the chapter references
+    for(int i = 0; i < chapter_xhtml_.size(); ++i){
+        toc_ += "<navPoint id=\"chapter
+        toc_ += to_string(i);        
+        toc_ += "\" playOrder=\"";
+        toc_ += to_string(i);
+        toc_ += "\">\n";
+        toc_ += "<navLabel>\n";
+        toc_ += "<text>Chapter ";
+        toc_ += to_string(i); 
+        toc_ += "</text>\n";
+        toc_ += "</navLabel>\n";
+        toc_ += "<content src=\"chapter"
+        toc_ += to_string(i);      
+        toc_ += ".html\"/>\n";
+        toc_ += "</navPoint>\n";
+    }
+    
     toc_ += "</navMap>\n";
     toc_ += "</ncx>\n";
 }

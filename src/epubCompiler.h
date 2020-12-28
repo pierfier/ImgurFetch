@@ -19,7 +19,6 @@ class epubCompiler{
         //Starts the creation of the files
         void createMimeType();
         void createMETAINF();
-        void createCoverHTML(string cover_image_file);
         void createTOC();
         
         void startContentOPF();
