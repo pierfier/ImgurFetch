@@ -20,8 +20,8 @@ class epubCompiler{
         void createMimeType();
         void createMETAINF();
         void createCoverHTML(string cover_image_file);
+        void createTOC();
         
-        void startTOC();
         void startContentOPF();
         void startXHTML(string & chapter);
         

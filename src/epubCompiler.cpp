@@ -119,6 +119,9 @@ void epubCompiler::createCoverHTML(string cover_image_file){
     ofstream out((bookFolder_ + "/cover.html").c_str(), ofstream::out);
     out << cover_html;
     out.close();
+    
+    // Add cover reference to content.opf manifest
+    content_man_ += "";
 }
 
 // Copies the image to the images folder of the book
@@ -248,6 +251,7 @@ void epubCompiler::addChapter(const string& imgDir, string& chapter){
             
                 //Add the image to the main body of the html
                 chapter += "<img src=\"";
+                chapter += "images/";
                 chapter += *it;
                 chapter += "\" alt=\"--\"/>\n";
 
@@ -256,7 +260,9 @@ void epubCompiler::addChapter(const string& imgDir, string& chapter){
                 string extension = string(*it).substr(ext_start, string::npos);
 
                 //Add image source to the manifest of (content.opf)
-                content_man_ += "<item id=\"img\" href=\""; 
+                content_man_ += "<item id=\"img";
+                content_man_ += string(*it).substr(0, ext_start);
+                content_man_ += "\" href=\"images/"; 
                 content_man_ += *it;
                 content_man_ += "\" media-type=\"image/" + extension + "\"/>\n";
             }
@@ -314,9 +320,9 @@ void epubCompiler::finishContentOPFString(){
     content_man_ += "</package>\n";
 }
 
-//Creates the table of contents file
-// TODO change to include each chapter file
-void epubCompiler::startTOC(){
+// Creates the table of contents file
+// This should be called after 
+void epubCompiler::createTOC(){
     toc_ += "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
     toc_ += "<ncx xmlns=\"http://www.daisy.org/z3986/2005/ncx/\" version=\"2005-1\">\n";
     toc_ += "<head>\n";
@@ -331,7 +337,9 @@ void epubCompiler::startTOC(){
     toc_ += "<navMap>\n";
     toc_ += "<navPoint id=\"chapter01\" playOrder=\"1\">\n";
     toc_ += "<navLabel>\n";
+
     toc_ += "<text>Chapter 1</text>\n"; // TODO include the chapter html files
+    
     toc_ += "</navLabel>\n";
     toc_ += "<content src=\"main.html\"/>\n";
     toc_ += "</navPoint>\n";

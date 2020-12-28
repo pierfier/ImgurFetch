@@ -11,6 +11,7 @@ Main Program
 #7 [Low]: Change the parsing of options as -gc instead of -g -c
 #8 [Medium]: Change the strategy of epubCompilier by first writing to strings and then write to the files at the end by a close function
 #9 [Low]: Setup as an AUR Build package
+#10 [High]: In the manifest, the media type should not include the "." and jpg should be jpeg
 
 UI Front end
 ============
