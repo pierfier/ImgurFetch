@@ -128,8 +128,16 @@ int main(int argc, char *argv[]){
             // Compile the epub with the root image source
             eCompiler.compileImages(imageSrc);
             eCompiler.finishXHTMLStrings();
-            eCompiler.writeAllFiles();
 
+            // Write all of the metadata files
+            eCompiler.createMimeType();
+            eCompiler.createTOC();
+            eCompiler.createMETAINF();
+            
+            eCompiler.writeAllFiles();
+            eCompiler.transferImagesToBookDir(imageSrc);
+            
+            eCompiler.zipEpub();
 
         }else if(string(argv[i]) == "--help"){
             cout << "Usage:" << endl;

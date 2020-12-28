@@ -6,6 +6,7 @@
 #include <dirent.h>
 #include <sys/stat.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <stdio.h>
 #include <time.h>
 #include "epubCompiler.h"
@@ -100,13 +101,6 @@ void epubCompiler::startXHTML(string & xhtml_file){
     xhtml_file += title_;
     xhtml_file += "</title>\n";
     xhtml_file += "</head>\n<body>\n<div>\n";
-}
-
-
-// Copies the image to the images folder of the book
-// Takes the full path, including file name as the argument
-void epubCompiler::transferImagesToBookDir(string images_path){
-    //TODO implement this method
 }
 
 //Finish all of the chapter xhtml files
@@ -236,7 +230,7 @@ void epubCompiler::addChapter(const string& imgDir, string& chapter){
                 //Get the file type from the name
                 size_t ext_start = string(*it).find(".");
                 string extension = string(*it).substr(ext_start + 1, string::npos);
-                if(extension.compare("jpg" == 0)){
+                if(extension.compare("jpg") == 0){
                     extension = string("jpeg");
                 }
 
@@ -321,7 +315,7 @@ void epubCompiler::createTOC(){
     
     // Add all of the chapter references
     for(int i = 0; i < chapter_xhtml_.size(); ++i){
-        toc_ += "<navPoint id=\"chapter
+        toc_ += "<navPoint id=\"chapter";
         toc_ += to_string(i);        
         toc_ += "\" playOrder=\"";
         toc_ += to_string(i);
@@ -331,7 +325,7 @@ void epubCompiler::createTOC(){
         toc_ += to_string(i); 
         toc_ += "</text>\n";
         toc_ += "</navLabel>\n";
-        toc_ += "<content src=\"chapter"
+        toc_ += "<content src=\"chapter";
         toc_ += to_string(i);      
         toc_ += ".html\"/>\n";
         toc_ += "</navPoint>\n";
@@ -339,6 +333,21 @@ void epubCompiler::createTOC(){
     
     toc_ += "</navMap>\n";
     toc_ += "</ncx>\n";
+}
+
+// Copies the image to the images folder of the book
+// Takes the full path, including file name as the argument
+void epubCompiler::transferImagesToBookDir(string images_path){
+    
+    string cp_cmd = string(); 
+    cp_cmd += "cp -r " + images_path + "/* " + bookFolder_ + "/OEBPS/images/";
+
+    FILE * fp;
+    if((fp = popen(cp_cmd.c_str(), "r")) != NULL){
+        //DEBUG
+        cout << "Images Copied!" << endl << endl;
+    }
+    pclose(fp);
 }
 
 // Write all of the content strings to the respective files
@@ -354,8 +363,36 @@ void epubCompiler::writeAllFiles(){
     //-- Write to content.opf
     finishContentOPFString();
 
-    ofstream out(bookFolder_ + "/OEBPS/content.opf", ofstream::out);
-    out << content_man_;
-    out.close();
+    ofstream outOPF(bookFolder_ + "/OEBPS/content.opf", ofstream::out);
+    outOPF << content_man_;
+    outOPF.close();
+    
+    //-- Write to toc.ncx
+    ofstream outTOC(bookFolder_ + "/toc.ncx", ofstream::out);
+    outTOC << toc_;
+    outTOC.close();
 
+}
+
+// Zip up the epub
+void epubCompiler::zipEpub(){
+    FILE * fp;
+ 
+    char cwd[500];
+    getcwd(cwd, sizeof(cwd));
+    
+    // Construct full command to zip and return finished epub
+    string cmd = string();
+    
+    cmd += "cd " + bookFolder_;
+    cmd += "; zip -0Xqv \'";
+    cmd += title_ + ".epub\' mimetype;";
+    cmd += "zip -Xr9Dqv \'";
+    cmd += title_ + ".epub\' *; ";
+    cmd += "cd " + string(cwd);
+
+    if((fp = popen(cmd.c_str(), "w")) == NULL){
+        cout << "Zipping failed!" << endl;
+    }
+    pclose(fp);
 }

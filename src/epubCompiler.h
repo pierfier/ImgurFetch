@@ -24,13 +24,15 @@ class epubCompiler{
         void startContentOPF();
         void startXHTML(string & chapter);
         
+        void addChapter(const string & imgDir, string & chapter);
+        
         void finishXHTMLStrings();
         void finishContentOPFString();
         
         void transferImagesToBookDir(string image_path);
 
-        void addChapter(const string & imgDir, string & chapter);
         void writeAllFiles();
+        void zipEpub();
 
         // Returns passed string to lowercase
         string strToLower(string str){    
