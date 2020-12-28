@@ -146,9 +146,22 @@ void epubCompiler::compileImages(const string& rootImageSrc){
 
             // Check if there is a cover image
             if(string(strToLower(ent->d_name)).find(string("cover")) != std::string::npos){
-                //DEBUG
                 cout << "Found cover image\n";
                 cout << "Cover name: " << ent->d_name << "\n";
+    
+                // Get image extension
+                size_t ext_start = string(ent->d_name).find(".");
+                string extension = string(ent->d_name).substr(ext_start + 1, string::npos);
+                if(extension.compare("jpg") == 0){
+                    extension = string("jpeg");
+                }
+
+                // Reference cover image information
+                content_man_ += "<item id=\"cover-image\" ";
+                content_man_ += "href=\"images/";
+                content_man_ += ent->d_name;
+                content_man_ += "\" media-type=\"image/";
+                content_man_ += extension + "\"/>\n";
             }
         }
         closedir(dir);
@@ -278,7 +291,7 @@ void epubCompiler::startContentOPF(){
     content_man_ += "urn:uuid:";
     content_man_ += uuid;
     content_man_ += "</dc:identifier>\n";
-    content_man_ += "meta name=\"cover\" content=\"cover-image\"";
+    content_man_ += "<meta name=\"cover\" content=\"cover-image\"/>";
     content_man_ += "</metadata>\n";
     content_man_ += "<manifest>\n";
     content_man_ += "<item id=\"ncx\" href=\"toc.ncx\" media-type=\"application/x-dtbncx+xml\" />\n";
@@ -289,7 +302,6 @@ void epubCompiler::startContentOPF(){
 void epubCompiler::finishContentOPFString(){
     content_man_ += "</manifest>\n";
     content_man_ += "<spine toc=\"ncx\">\n";
-    content_man_ += "<itemref idref=\"cover\" linear=\"no\"/>\n";
     content_man_ += "<itemref idref=\"book\" />\n";
     
 
@@ -316,17 +328,17 @@ void epubCompiler::createTOC(){
     // Add all of the chapter references
     for(int i = 0; i < chapter_xhtml_.size(); ++i){
         toc_ += "<navPoint id=\"chapter";
-        toc_ += to_string(i);        
+        toc_ += to_string(i+1);        
         toc_ += "\" playOrder=\"";
-        toc_ += to_string(i);
+        toc_ += to_string(i+1);
         toc_ += "\">\n";
         toc_ += "<navLabel>\n";
         toc_ += "<text>Chapter ";
-        toc_ += to_string(i); 
+        toc_ += to_string(i+1); 
         toc_ += "</text>\n";
         toc_ += "</navLabel>\n";
         toc_ += "<content src=\"chapter";
-        toc_ += to_string(i);      
+        toc_ += to_string(i+1);      
         toc_ += ".html\"/>\n";
         toc_ += "</navPoint>\n";
     }
@@ -343,9 +355,8 @@ void epubCompiler::transferImagesToBookDir(string images_path){
     cp_cmd += "cp -r " + images_path + "/* " + bookFolder_ + "/OEBPS/images/";
 
     FILE * fp;
-    if((fp = popen(cp_cmd.c_str(), "r")) != NULL){
-        //DEBUG
-        cout << "Images Copied!" << endl << endl;
+    if((fp = popen(cp_cmd.c_str(), "r")) == NULL){
+        cout << "ERROR: Image files could not be copied over!" << endl;
     }
     pclose(fp);
 }
@@ -368,7 +379,7 @@ void epubCompiler::writeAllFiles(){
     outOPF.close();
     
     //-- Write to toc.ncx
-    ofstream outTOC(bookFolder_ + "/toc.ncx", ofstream::out);
+    ofstream outTOC(bookFolder_ + "/OEBPS/toc.ncx", ofstream::out);
     outTOC << toc_;
     outTOC.close();
 
