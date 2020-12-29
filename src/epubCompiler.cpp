@@ -260,19 +260,21 @@ void epubCompiler::addChapter(const string& imgDir, string& chapter){
     }
 }   
 
-//This method adds to Content.opf string up until
-//the middle of the manifest where images are being referenced
-void epubCompiler::startContentOPF(){
-
+//
+void epubCompiler::generateUUID(){
     //Generate a random UUID
     string charset = string("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
-    string uuid;
     
     srand(time(NULL));
     //Grab random characters to construct a uuid
     for(int i = 0; i < 26; ++i){
-        uuid += charset[rand() % (charset.length())];
+        uuid_ += charset[rand() % (charset.length())];
     }
+}
+
+//This method adds to Content.opf string up until
+//the middle of the manifest where images are being referenced
+void epubCompiler::startContentOPF(){
 
     //Write all of the data
     content_man_ += "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
@@ -289,7 +291,7 @@ void epubCompiler::startContentOPF(){
     content_man_ += "<dc:publisher> Imgur website</dc:publisher>\n";
     content_man_ += "<dc:identifier id=\"BookID\" opf:scheme=\"UUID\">";
     content_man_ += "urn:uuid:";
-    content_man_ += uuid;
+    content_man_ += uuid_;
     content_man_ += "</dc:identifier>\n";
     content_man_ += "<meta name=\"cover\" content=\"cover-image\"/>";
     content_man_ += "</metadata>\n";
@@ -315,7 +317,9 @@ void epubCompiler::createTOC(){
     toc_ += "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
     toc_ += "<ncx xmlns=\"http://www.daisy.org/z3986/2005/ncx/\" version=\"2005-1\">\n";
     toc_ += "<head>\n";
-    toc_ += "<meta name=\"dtb:uid\" content=\"qwertystorm1234567890\"/>\n";
+    toc_ += "<meta name=\"urn:uuid:\" content=\"";
+    toc_ += uuid_;
+    toc_ += "\"/>\n";
     toc_ += "<meta name=\"dtb:depth\" content=\"1\"/>\n";
     toc_ += "<meta name=\"dtb:totalPageCount\" content=\"0\"/>\n";
     toc_ += "<meta name=\"dtb:maxPageNumber\" content=\"0\"/>\n";
